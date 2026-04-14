@@ -1,2 +1,2 @@
-# Eget-spel
-Spel för datakurs
+# Placeholder name for platformer 
+This is a project for the course DD1349, and is a platformer game made using the Godot game engine amd written in GDScript. To help with the development process, AI such as Github Copilot & ChatGPT will also be used. The games minimum viable product (MVP) will consist of a playable character that can move around with basic movement systems such as walking and jumping, a map where this character can move around and some sort of win condition.
