@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="INDA-2D Platformer"
-run/main_scene="uid://cllfpkop4xf7d"
+run/main_scene="uid://dpqj4j2io8od3"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
