@@ -37,9 +37,9 @@ func basic_movement():
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		
-		
-# Dashes forward in the direction player is moving, 
-# is then placed on cooldown		
+# CURRENT BUG!!!
+# The player dashes forward in a straight line, dash is
+# then placed on cooldown.
 func dash():
 	var dash_direction := Input.get_axis("left", "right")
 	dashing = true
@@ -53,6 +53,7 @@ func dash():
 
 func _on_dash_timer_timeout() -> void:
 	dashing = false
+
 
 func _on_dash_again_timer_timeout() -> void:
 	can_dash = true
