@@ -26,5 +26,9 @@ wait_time = 0.2
 [node name="dash_again_timer" type="Timer" parent="." unique_id=842854450]
 wait_time = 0.5
 
+[node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
+position_smoothing_enabled = true
+position_smoothing_speed = 9.0
+
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
