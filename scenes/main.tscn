@@ -1,8 +1,41 @@
 [gd_scene format=3 uid="uid://cllfpkop4xf7d"]
 
-[ext_resource type="PackedScene" uid="uid://bjrksfoia06k5" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://do7yd2woew67n" path="res://scripts/network-handler.gd" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://dpqj4j2io8od3" path="res://scenes/world1.tscn" id="2_0wfyh"]
 
 [node name="Main" type="Node2D" unique_id=10254011]
 
-[node name="Player" parent="." unique_id=1405311707 instance=ExtResource("1_o5qli")]
-position = Vector2(255, 232)
+[node name="Network Handler" type="Node2D" parent="." unique_id=1612527544]
+script = ExtResource("1_o5qli")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1812308701]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1918077270]
+offset_right = 90.0
+offset_bottom = 101.0
+
+[node name="HostButton" type="Button" parent="CanvasLayer/VBoxContainer" unique_id=1788440796]
+layout_mode = 2
+text = "Host
+"
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/VBoxContainer" unique_id=1530029556]
+layout_mode = 2
+text = "Join
+"
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/VBoxContainer" unique_id=1051596795]
+layout_mode = 2
+placeholder_text = "Enter IP"
+alignment = 1
+
+[node name="World" type="Node2D" parent="." unique_id=2075515441]
+
+[node name="World1" parent="World" unique_id=1309825274 instance=ExtResource("2_0wfyh")]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=889647496]
+_spawnable_scenes = PackedStringArray("uid://bjrksfoia06k5")
+spawn_path = NodePath("../World")
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HostButton" to="Network Handler" method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/JoinButton" to="Network Handler" method="_on_join_button_pressed"]
