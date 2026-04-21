@@ -15,6 +15,7 @@ func _enter_tree():
 		set_multiplayer_authority(name.to_int())
 
 func _ready():
+	
 	if is_multiplayer_authority():
 		$Camera2D.enabled = true
 	else:
@@ -30,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
 	# Add the gravity.
-	if not is_on_floor() and !dashing:
+	if not is_on_floor() and not dashing:
 		velocity += get_gravity() * delta
 
 	# Handles dash
@@ -43,6 +44,7 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+## Manages basic movement, namely jumping and walking.
 func basic_movement():
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor() and !dashing:
@@ -56,8 +58,8 @@ func basic_movement():
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		
 # CURRENT BUG!!!
-# The player dashes forward in a straight line, dash is
-# then placed on cooldown.
+## The player dashes forward in a straight line, dash is
+## then placed on cooldown.
 func dash():
 	var dash_direction := Input.get_axis("left", "right")
 	dashing = true

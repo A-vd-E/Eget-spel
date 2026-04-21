@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://jn2u0b8sddne"]
+
+[ext_resource type="Script" path="res://scripts/death_screen.gd" id="1_dwo6e"]
+[ext_resource type="Texture2D" uid="uid://d2dnh2lbs62j8" path="res://assets/images/6757_Sadge.png" id="2_mqh5l"]
+
+[node name="DeathScreen" type="CanvasLayer" unique_id=675604386]
+script = ExtResource("1_dwo6e")
+
+[node name="Background" type="TextureRect" parent="." unique_id=622775118]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_mqh5l")
+
+[node name="Label" type="Label" parent="Background" unique_id=603342496]
+layout_mode = 0
+offset_left = 265.0
+offset_top = 63.0
+offset_right = 894.0
+offset_bottom = 323.0
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.78754234, 2.695322e-06, 2.8878452e-07, 1)
+theme_override_font_sizes/font_size = 150
+text = "u dieded"
+horizontal_alignment = 1
+
+[node name="Quit" type="Button" parent="Background" unique_id=1859416214]
+layout_mode = 0
+offset_left = 459.0
+offset_top = 537.0
+offset_right = 672.0
+offset_bottom = 610.0
+theme_override_font_sizes/font_size = 34
+text = "rage quit"
+
+[node name="Revive" type="Button" parent="Background" unique_id=336826927]
+layout_mode = 0
+offset_left = 459.0
+offset_top = 379.0
+offset_right = 691.0
+offset_bottom = 462.0
+theme_override_font_sizes/font_size = 30
+text = "Revive & git gut"
+
+[connection signal="pressed" from="Background/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Background/Revive" to="." method="_on_revive_pressed"]
