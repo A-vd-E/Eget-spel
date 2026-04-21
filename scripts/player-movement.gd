@@ -8,9 +8,10 @@ const DASH_SPEED = 900.0
 var dashing = false
 var can_dash = true
 
+func _enter_tree():
+		set_multiplayer_authority(name.to_int())
+
 func _ready():
-	set_multiplayer_authority(name.to_int())
-	
 	if is_multiplayer_authority():
 		$Camera2D.enabled = true
 	else:

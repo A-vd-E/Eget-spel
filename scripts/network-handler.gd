@@ -1,6 +1,5 @@
 extends Node
 
-#const IP_ADDRESS: String = "localhost"
 const PORT: int = 42069
 var player_scene = preload("res://scenes/player.tscn")
 
@@ -21,18 +20,31 @@ func _on_host_button_pressed() -> void:
 	
 	add_player(multiplayer.get_unique_id())
 	
-
 func _on_join_button_pressed() -> void:
 	host_button.hide()
 	join_button.hide()
 	ip_input.hide()
 	
-	var ip_address = ip_input.text
-	if ip_address == "":
-		ip_address = "localhost"
+	var input_text = ip_input.text
+	if input_text == "":
+		input_text = "localhost:42069" # Default
+	
+	# Split the input into Address and Port
+	# Expects format "address:port" (e.g. orange-tree.playit.gg:54321)
+	var parts = input_text.split(":")
+	var ip_address = parts[0]
+	var connect_port = PORT # Default to your constant 42069
+	
+	if parts.size() > 1:
+		connect_port = parts[1].to_int()
 	
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_client(ip_address, PORT)
+	print("Connecting to ", ip_address, " on port ", connect_port)
+	var error = peer.create_client(ip_address, connect_port)
+	if error != OK:
+		print("Failed to create client: ", error)
+		return
+		
 	multiplayer.multiplayer_peer = peer
 	
 func add_player(id):
