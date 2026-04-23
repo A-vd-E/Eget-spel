@@ -8,10 +8,12 @@ var player_scene = preload("res://scenes/player.tscn")
 @onready var join_button = get_node("../CanvasLayer/VBoxContainer/JoinButton")
 @onready var ip_input = get_node("../CanvasLayer/VBoxContainer/LineEdit")
 
+func _ready():
+	multiplayer.peer_disconnected.connect(remove_player)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
+
 func _on_host_button_pressed() -> void:
-	host_button.hide()
-	join_button.hide()
-	ip_input.hide()
+	toggle_ui(false)
 	
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(PORT)
@@ -21,9 +23,7 @@ func _on_host_button_pressed() -> void:
 	add_player(multiplayer.get_unique_id())
 	
 func _on_join_button_pressed() -> void:
-	host_button.hide()
-	join_button.hide()
-	ip_input.hide()
+	toggle_ui(false)
 	
 	var input_text = ip_input.text
 	if input_text == "":
@@ -51,3 +51,16 @@ func add_player(id):
 	var player = player_scene.instantiate()
 	player.name = str(id)
 	world.add_child(player)
+	
+func remove_player(id):
+	var player = world.get_node_or_null(str(id))
+	if player:
+		player.queue_free()
+		
+func _on_server_disconnected():
+	get_tree().reload_current_scene()
+	
+func toggle_ui(show: bool):
+	host_button.visible = show
+	join_button.visible = show
+	ip_input.visible = show
