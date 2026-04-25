@@ -10,6 +10,10 @@ var can_dash = true
 
 @export var sync_position: Vector2
 @export var lerp_weight = 0.75
+@export var hitbox_shape: Shape2D
+@export var player_id := 1:
+	set(id):
+		player_id = id
 
 func _enter_tree():
 		set_multiplayer_authority(name.to_int())
@@ -21,7 +25,7 @@ func _ready():
 	else:
 		$Camera2D.enabled = false
 
-func _process(delta: float):
+func _process(_delta: float):
 	if is_multiplayer_authority():
 		sync_position = global_position
 	else:
@@ -44,6 +48,12 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+func _input(event: InputEvent) -> void:
+	
+	
+	if event.is_action_pressed("attack") and not event.is_echo():
+		var hitbox = Hitbox.new(20, 5.0, hitbox_shape)
+		add_child(hitbox)
 ## Manages basic movement, namely jumping and walking.
 func basic_movement():
 	# Handle jump.
@@ -61,6 +71,7 @@ func basic_movement():
 ## The player dashes forward in a straight line, dash is
 ## then placed on cooldown.
 func dash():
+	
 	var dash_direction := Input.get_axis("left", "right")
 	dashing = true
 	can_dash = false
@@ -70,6 +81,8 @@ func dash():
 	$dash_again_timer.start()
 	velocity.x =  dash_direction * DASH_SPEED 
 	velocity.y = 0
+
+
 
 func _on_dash_timer_timeout() -> void:
 	dashing = false

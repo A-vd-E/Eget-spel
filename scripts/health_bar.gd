@@ -1,6 +1,6 @@
 extends ProgressBar
 
-@export var health: Node 
+@export var health: Node2D
 
 
 # sets max and current values for hp bar based on 

@@ -4,6 +4,10 @@
 [ext_resource type="Script" uid="uid://dsb0rr31kppk0" path="res://scripts/player-movement.gd" id="1_g2els"]
 [ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="3_dqkch"]
 [ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="4_qlg0r"]
+[ext_resource type="Script" uid="uid://lselprrepmhl" path="res://scripts/hurtbox.gd" id="4_tuyoq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qlg0r"]
+radius = 1024.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
 size = Vector2(871.4285, 1614.2856)
@@ -16,6 +20,9 @@ properties/1/path = NodePath("Health:sync_health")
 properties/1/spawn = true
 properties/1/replication_mode = 1
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
+size = Vector2(842.85706, 1614.2856)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqkch"]
 bg_color = Color(0.19793722, 0.19793725, 0.19793713, 1)
 
@@ -25,6 +32,7 @@ bg_color = Color(0.6439097, 0.04708454, 0.021919081, 1)
 [node name="Player" type="CharacterBody2D" unique_id=438100406]
 scale = Vector2(0.07, 0.07)
 script = ExtResource("1_g2els")
+hitbox_shape = SubResource("CircleShape2D_qlg0r")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545070164]
 texture = ExtResource("1_3vyb7")
@@ -49,8 +57,16 @@ position_smoothing_speed = 9.0
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1074374701]
 replication_config = SubResource("SceneReplicationConfig_g2els")
 
-[node name="Health" type="Node" parent="." unique_id=1119176403]
+[node name="Health" type="Node2D" parent="." unique_id=1504426426]
 script = ExtResource("3_dqkch")
+
+[node name="Hurtbox" type="Area2D" parent="Health" unique_id=1690071242]
+script = ExtResource("4_tuyoq")
+metadata/_custom_type_script = "uid://lselprrepmhl"
+
+[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="Health/Hurtbox" unique_id=1133688344]
+position = Vector2(7.1428432, 35.71429)
+shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1718776609 node_paths=PackedStringArray("health")]
 offset_left = -728.5714
