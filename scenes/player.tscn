@@ -1,20 +1,56 @@
 [gd_scene format=3 uid="uid://bjrksfoia06k5"]
 
 [ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://dsb0rr31kppk0" path="res://scripts/player-movement.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://dsb0rr31kppk0" path="res://scripts/player_controller.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://bfby10rmowabc" path="res://scripts/networking/input_multiplayer.gd" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="3_dqkch"]
 [ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="4_qlg0r"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
+properties/0/path = NodePath(".:player_id")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:do_jump")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:do_dash")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:sync_position")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:sync_velocity")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g2els"]
+properties/0/path = NodePath("InputSynchronizer:input_direction")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
 size = Vector2(871.4285, 1614.2856)
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g2els"]
-properties/0/path = NodePath(".:sync_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath("Health:sync_health")
-properties/1/spawn = true
-properties/1/replication_mode = 1
+[sub_resource type="GDScript" id="GDScript_qlg0r"]
+script/source = "class_name Hurtbox extends Area2D
+
+@onready var owner_health: Node2D = get_parent()
+
+func _ready() -> void:
+	monitoring = false
+	monitorable = true
+	
+	set_collision_layer_value(1, true)
+	set_collision_mask_value(1, true)
+
+
+func receive_hit(damage: int) -> void:
+	owner_health.take_damage(damage)
+	print(owner_health.get_parent().name + \"took damage\")
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
+size = Vector2(842.85706, 1614.2856)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqkch"]
 bg_color = Color(0.19793722, 0.19793725, 0.19793713, 1)
@@ -25,6 +61,16 @@ bg_color = Color(0.6439097, 0.04708454, 0.021919081, 1)
 [node name="Player" type="CharacterBody2D" unique_id=438100406]
 scale = Vector2(0.07, 0.07)
 script = ExtResource("1_g2els")
+
+[node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1100668368]
+replication_config = SubResource("SceneReplicationConfig_tuyoq")
+
+[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1074374701]
+replication_config = SubResource("SceneReplicationConfig_g2els")
+script = ExtResource("2_tuyoq")
+
+[node name="jump_buffer_timer" type="Timer" parent="InputSynchronizer" unique_id=472552049]
+wait_time = 0.1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545070164]
 texture = ExtResource("1_3vyb7")
@@ -43,14 +89,17 @@ wait_time = 0.2
 wait_time = 0.5
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
-position_smoothing_enabled = true
 position_smoothing_speed = 9.0
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1074374701]
-replication_config = SubResource("SceneReplicationConfig_g2els")
-
-[node name="Health" type="Node" parent="." unique_id=1119176403]
+[node name="Health" type="Node2D" parent="." unique_id=1504426426]
 script = ExtResource("3_dqkch")
+
+[node name="Hurtbox" type="Area2D" parent="Health" unique_id=1690071242]
+script = SubResource("GDScript_qlg0r")
+
+[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="Health/Hurtbox" unique_id=1133688344]
+position = Vector2(7.1428432, 35.71429)
+shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1718776609 node_paths=PackedStringArray("health")]
 offset_left = -728.5714
@@ -63,5 +112,6 @@ show_percentage = false
 script = ExtResource("4_qlg0r")
 health = NodePath("../Health")
 
+[connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
