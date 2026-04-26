@@ -2,32 +2,60 @@ extends MultiplayerSynchronizer
 
 @onready var player: CharacterBody2D = $".."
 var input_direction: int
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
+	
 	input_direction = Input.get_axis("left", "right")
+	
+	# This ensures that only the client (one in control of playable
+	# chatacter) runs the processes, thereby registering input. 
+	# Without this we would get double input from both players 
+	# in the scene (but like yanky and inconsistent)
 	if get_multiplayer_authority() != multiplayer.get_unique_id():
 		set_process(false)
 		set_physics_process(false)
 
+# input_direction under _physics_process for predictability in movement
 func _physics_process(delta: float) -> void:
 	input_direction = Input.get_axis("left", "right")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# Rpc calls placed under _process for precision/reduce lag 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
 		jump.rpc()
-	
+		
 	if Input.is_action_just_pressed("dash"):
 		dash.rpc()
 		
+	if Input.is_action_just_pressed("attack"):
+		attack.rpc()
+		
+# RPC:s allow the clients to communicate input to the server
+# call_local as argument so the host (both client and server) can
+# talk to the itself (client part to server part). If I've understood 
+# correctly
 @rpc("call_local")
 func jump():
 	if multiplayer.is_server():
 		player.do_jump = true
 		
+		# without a timer, the jump is "stored" if you jump mid-air.
+		# Now it only stores for a short time (right before hitting the ground)
+		$jump_buffer_timer.start()
+		
 @rpc("call_local")
 func dash():
-	print("first")
+	
 	if multiplayer.is_server():
 		player.do_dash = true
-		print("second")
+		
+		
+@rpc("call_local")
+func attack():
+	if multiplayer.is_server():
+		player.do_attack = true
+		
+# To avoid "storing" a jump if jump button pressed mid-air
+func _on_jump_buffer_timer_timeout() -> void:
+	if multiplayer.is_server():
+		player.do_jump = false

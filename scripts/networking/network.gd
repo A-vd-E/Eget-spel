@@ -19,7 +19,7 @@ var ip_input
 
 
 func _ready():
-	# Moved this to become_host/server so it server is in charge of player connections
+	# Moved this to become_host so the server is in charge of player connections
 	#multiplayer.peer_disconnected.connect(remove_player)
 	#multiplayer.server_disconnected.connect(_on_server_disconnected)
 	pass
@@ -35,7 +35,7 @@ func _become_host() -> void:
 	
 	multiplayer.peer_connected.connect(_add_player)
 	multiplayer.peer_disconnected.connect(remove_player)
-	#multiplayer.server_disconnected.connect(_on_server_disconnected)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
 	
 	_add_player(multiplayer.get_unique_id())
@@ -69,24 +69,22 @@ func _join_as_non_host_client(ip_input) -> void:
 func _add_player(id):
 	print("Player %s joined the game" % id)
 	
+	
 	var player = player_scene.instantiate()
+	# This player_id could probably be replaced. But tutorial did 
+	# it this way and it works, so won't change it right now
 	player.player_id = id
 	player.name = str(id)
 	_player_spawn_node.add_child(player)
-	#player.set_multiplayer_authority(id)
 	
-	#
-#@rpc("authority", "call_local", "reliable")
-#func request_players():
-	#for id in multiplayer.get_peers():
-		#add_player(id)
-		#
+	
+
 func remove_player(id):
 	print("Player %s disconnected" % id)
 	var player = _player_spawn_node.get_node_or_null(str(id))
 	if player:
 		player.queue_free()
 		
-#func _on_server_disconnected():
-	#get_tree().reload_current_scene()
-	#
+func _on_server_disconnected():
+	get_tree().reload_current_scene()
+	

@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://bjrksfoia06k5"]
 
 [ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://dsb0rr31kppk0" path="res://scripts/player-movement.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://dsb0rr31kppk0" path="res://scripts/player_controller.gd" id="1_g2els"]
 [ext_resource type="Script" uid="uid://bfby10rmowabc" path="res://scripts/networking/input_multiplayer.gd" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="3_dqkch"]
 [ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="4_qlg0r"]
 [ext_resource type="Script" uid="uid://lselprrepmhl" path="res://scripts/hurtbox.gd" id="4_tuyoq"]
+[ext_resource type="Script" uid="uid://ce5bu2572i0ex" path="res://scenes/attack_ability.gd" id="7_fjrip"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qlg0r"]
 radius = 1024.0
@@ -20,10 +21,10 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:do_jump")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:_is_on_floor")
+properties/3/path = NodePath(".:do_dash")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:do_dash")
+properties/4/path = NodePath(".:do_attack")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
@@ -55,6 +56,9 @@ replication_config = SubResource("SceneReplicationConfig_tuyoq")
 [node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1074374701]
 replication_config = SubResource("SceneReplicationConfig_g2els")
 script = ExtResource("2_tuyoq")
+
+[node name="jump_buffer_timer" type="Timer" parent="InputSynchronizer" unique_id=472552049]
+wait_time = 0.1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545070164]
 texture = ExtResource("1_3vyb7")
@@ -98,5 +102,13 @@ show_percentage = false
 script = ExtResource("4_qlg0r")
 health = NodePath("../Health")
 
+[node name="AttackAbility" type="Node2D" parent="." unique_id=759640053]
+script = ExtResource("7_fjrip")
+
+[node name="attack_again_timer" type="Timer" parent="AttackAbility" unique_id=741379165]
+wait_time = 0.6
+
+[connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
+[connection signal="timeout" from="AttackAbility/attack_again_timer" to="AttackAbility" method="_on_attack_again_timer_timeout"]

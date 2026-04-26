@@ -1,6 +1,6 @@
 extends Node2D
 
-
+# Moved all the button logic here to separate from networking.
 func _on_host_button_pressed() -> void:
 	print("Host button pressed")
 	toggle_ui(false)
@@ -14,6 +14,6 @@ func _on_join_button_pressed() -> void:
 	toggle_ui(false)
 	Network._join_as_non_host_client(ip_input.text)
 	
-## Makes the UI visible/invisible
+
 func toggle_ui(show: bool):
 	$CanvasLayer.visible = show
