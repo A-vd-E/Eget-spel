@@ -6,8 +6,10 @@ const DASH_SPEED := 900.0
 
 
 @onready var input_synchronizer = $InputSynchronizer
-#@export var sync_position: Vector2   Will still be used for lerp?
-#@export var lerp_weight := 0.75      Will still be used for lerp?
+@export var sync_position: Vector2
+@export var sync_velocity: Vector2
+@export var correction_strength := 10.0 # Higher means more aggresive correction
+
 
 
 # This player_id could probably be replaced. But tutorial did 
@@ -39,23 +41,36 @@ func _ready():
 		$Camera2D.enabled = true
 	else:
 		$Camera2D.enabled = false
-	pass
 	
-# Haven't understood lerp yet so wont touch, but will probably
-# need to be reworked to acommodate new logic
-#func _process(_delta: float):  
-	#if is_multiplayer_authority():
-		#sync_position = global_position
-	#else:
-		#global_position = global_position.lerp(sync_position, lerp_weight)
+	sync_position = global_position
+	
 
 # Moved most things to _apply_movement_from_input
 func _physics_process(delta: float) -> void:
 	if multiplayer.is_server(): 
 		_apply_movement_from_input(delta)
+		sync_position = global_position
+		sync_velocity = velocity
+	else:
+		_apply_network_movement(delta)
 		
 	
-
+func _apply_network_movement(_delta):
+	# Base velocity follows the server
+	velocity = sync_velocity
+	
+	var drift_distance = global_position.distance_to(sync_position)
+	
+	if drift_distance > 100.0:
+		# Massive lag spike, snap to server
+		global_position = sync_position
+		reset_physics_interpolation()
+	elif drift_distance > 1.0:
+		# Slight drift, steer toward server
+		var direction_to_server = sync_position - global_position
+		velocity += direction_to_server * correction_strength
+	
+	move_and_slide()
 
 ## Manages basic movement, namely jumping and walking.
 func _apply_movement_from_input(delta):
