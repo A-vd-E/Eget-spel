@@ -38,6 +38,7 @@ spawn_path = NodePath("../Players")
 [node name="Players" type="Node2D" parent="." unique_id=1034175516]
 
 [node name="HitboxSpawner" type="MultiplayerSpawner" parent="." unique_id=1319518443]
+_spawnable_scenes = PackedStringArray("uid://dc7a3k21uhv4r")
 spawn_path = NodePath("../Hitboxes")
 
 [node name="Hitboxes" type="Node2D" parent="." unique_id=778308688]

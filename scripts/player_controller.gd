@@ -5,6 +5,7 @@ const JUMP_VELOCITY := -700.0
 const DASH_SPEED := 900.0
 
 
+@onready var attack_ability: Node = $AttackComponent
 @onready var input_synchronizer = $InputSynchronizer
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
@@ -34,7 +35,7 @@ var can_dash := true # Determines if you can dash, tied to timer
 		#set_multiplayer_authority(name.to_int()) Should be removed
 
 func _ready():
-	
+	add_to_group("players")
  	# Only the client player has a camera enabled, so always 
 	# follows the playable characther
 	if multiplayer.get_unique_id() == player_id:

@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bfby10rmowabc" path="res://scripts/networking/input_multiplayer.gd" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="3_dqkch"]
 [ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="4_qlg0r"]
+[ext_resource type="Script" uid="uid://csf0ypjefua5c" path="res://scripts/attack_ability.gd" id="7_fjrip"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:player_id")
@@ -31,22 +32,18 @@ properties/0/replication_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
 size = Vector2(871.4285, 1614.2856)
 
-[sub_resource type="GDScript" id="GDScript_qlg0r"]
-script/source = "class_name Hurtbox extends Area2D
+[sub_resource type="GDScript" id="GDScript_tuyoq"]
+script/source = "extends Node
 
-@onready var owner_health: Node2D = get_parent()
 
+# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	monitoring = false
-	monitorable = true
-	
-	set_collision_layer_value(1, true)
-	set_collision_mask_value(1, true)
+	pass # Replace with function body.
 
 
-func receive_hit(damage: int) -> void:
-	owner_health.take_damage(damage)
-	print(owner_health.get_parent().name + \"took damage\")
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
@@ -89,15 +86,16 @@ wait_time = 0.2
 wait_time = 0.5
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
+position_smoothing_enabled = true
 position_smoothing_speed = 9.0
 
-[node name="Health" type="Node2D" parent="." unique_id=1504426426]
+[node name="HealthComponent" type="Node2D" parent="." unique_id=1504426426]
 script = ExtResource("3_dqkch")
 
-[node name="Hurtbox" type="Area2D" parent="Health" unique_id=1690071242]
-script = SubResource("GDScript_qlg0r")
+[node name="Hurtbox" type="Area2D" parent="HealthComponent" unique_id=1690071242]
+script = SubResource("GDScript_tuyoq")
 
-[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="Health/Hurtbox" unique_id=1133688344]
+[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="HealthComponent/Hurtbox" unique_id=1133688344]
 position = Vector2(7.1428432, 35.71429)
 shape = SubResource("RectangleShape2D_qlg0r")
 
@@ -110,8 +108,15 @@ theme_override_styles/background = SubResource("StyleBoxFlat_dqkch")
 theme_override_styles/fill = SubResource("StyleBoxFlat_qlg0r")
 show_percentage = false
 script = ExtResource("4_qlg0r")
-health = NodePath("../Health")
+health = NodePath("../HealthComponent")
+
+[node name="AttackComponent" type="Node2D" parent="." unique_id=759640053]
+script = ExtResource("7_fjrip")
+
+[node name="attack_again_timer" type="Timer" parent="AttackComponent" unique_id=741379165]
+wait_time = 0.6
 
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
+[connection signal="timeout" from="AttackComponent/attack_again_timer" to="AttackComponent" method="_on_attack_again_timer_timeout"]
