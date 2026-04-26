@@ -64,6 +64,8 @@ func _join_as_non_host_client(ip_input) -> void:
 		return
 		
 	multiplayer.multiplayer_peer = peer
+	
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	#request_players.rpc_id(1)
 	
 func _add_player(id):
