@@ -27,8 +27,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("dash"):
 		dash.rpc()
 		
-	if Input.is_action_just_pressed("attack"):
-		attack.rpc()
+
 		
 # RPC:s allow the clients to communicate input to the server
 # call_local as argument so the host (both client and server) can
@@ -48,13 +47,7 @@ func dash():
 	
 	if multiplayer.is_server():
 		player.do_dash = true
-		
-		
-@rpc("call_local")
-func attack():
-	if multiplayer.is_server():
-		player.do_attack = true
-		
+			
 # To avoid "storing" a jump if jump button pressed mid-air
 func _on_jump_buffer_timer_timeout() -> void:
 	if multiplayer.is_server():

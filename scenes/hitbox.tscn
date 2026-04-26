@@ -1,12 +1,51 @@
 [gd_scene format=3 uid="uid://dc7a3k21uhv4r"]
 
-[ext_resource type="Script" uid="uid://bdka8wlnkt7et" path="res://scripts/hitbox.gd" id="1_0vdsg"]
+[sub_resource type="GDScript" id="GDScript_x6lip"]
+script/source = "class_name Hitbox2
+extends Area2D
+
+@export var attacker_dmg: int
+@export var hitbox_lifetime: float
+
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
+
+func setup(_attacker_dmg: int, _hitbox_lifetime: float) -> void:
+		attacker_dmg = _attacker_dmg
+		hitbox_lifetime = _hitbox_lifetime 
+		
+		if hitbox_lifetime > 0.0:
+			var timer = get_tree().create_timer(hitbox_lifetime)
+			timer.timeout.connect(queue_free)
+
+
+
+func _ready() -> void:
+	monitorable = false
+	area_entered.connect(_on_area_entered)
+		
+	set_collision_layer_value(1, true)
+	set_collision_mask_value(1, true)
+	
+func _on_area_entered(area: Area2D) -> void:
+	
+	if not multiplayer.is_server():
+		return
+	
+	if not area.has_method(\"receive_hit\"):
+		return
+	
+	
+	area.receive_hit(attacker_dmg)
+		
+		
+"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x6lip"]
 radius = 1505.2605
 
 [node name="Hitbox" type="Area2D" unique_id=2116740723]
-script = ExtResource("1_0vdsg")
+script = SubResource("GDScript_x6lip")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1484465355]
 shape = SubResource("CircleShape2D_x6lip")

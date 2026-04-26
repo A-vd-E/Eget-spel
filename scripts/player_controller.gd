@@ -4,11 +4,11 @@ const SPEED := 300.0
 const JUMP_VELOCITY := -700.0
 const DASH_SPEED := 900.0
 
-@onready var attack_ability: Node = $AttackAbility
+
 @onready var input_synchronizer = $InputSynchronizer
 #@export var sync_position: Vector2   Will still be used for lerp?
 #@export var lerp_weight := 0.75      Will still be used for lerp?
-@export var hitbox_shape: Shape2D
+
 
 # This player_id could probably be replaced. But tutorial did 
 # it this way and it works, so won't change it right now
@@ -22,7 +22,7 @@ const DASH_SPEED := 900.0
 var direction: int
 var do_jump := false # Tells player to jump, updated in InputSynchronizer
 var do_dash := false # Tells player to dash, updated in InputSynchronizer
-var do_attack := false # Tells player to attack updated in InputSynchronizer
+
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
 
@@ -54,9 +54,6 @@ func _physics_process(delta: float) -> void:
 	if multiplayer.is_server(): 
 		_apply_movement_from_input(delta)
 		
-		if do_attack:
-			attack_ability.attack()
-			do_attack = false	
 	
 
 
