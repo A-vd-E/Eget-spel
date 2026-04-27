@@ -33,7 +33,9 @@ var can_dash := true # Determines if you can dash, tied to timer
 
 func _ready():
 	
+
 	$HealthComponent.set_owner_id(player_id)
+	
  	# Only the client player has a camera enabled, so always 
 	# follows the playable characther
 	if multiplayer.get_unique_id() == player_id:
