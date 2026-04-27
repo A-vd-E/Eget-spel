@@ -25,17 +25,15 @@ const DASH_SPEED := 900.0
 var direction: int
 var do_jump := false # Tells player to jump, updated in InputSynchronizer
 var do_dash := false # Tells player to dash, updated in InputSynchronizer
-var do_attack := false
+var do_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
 
 
-# Changed so client only has authority over input, instead of all movement
-#func _enter_tree():
-		#set_multiplayer_authority(name.to_int()) Should be removed
 
 func _ready():
 	
+	$HealthComponent.set_owner_id(player_id)
  	# Only the client player has a camera enabled, so always 
 	# follows the playable characther
 	if multiplayer.get_unique_id() == player_id:
@@ -54,6 +52,7 @@ func _physics_process(delta: float) -> void:
 		sync_velocity = velocity
 		
 		if do_attack:
+			print("Player:",player_id, " called attack. Test 1 In Player")
 			attack_component.attack()
 			do_attack = false
 	else:

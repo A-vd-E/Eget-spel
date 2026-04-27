@@ -3,9 +3,11 @@ extends Area2D
 
 @export var attacker_dmg: int
 @export var hitbox_lifetime: float
+
+
 var follow_target: Node2D
 var offset: Vector2
-
+var hurtbox_owner
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
@@ -22,7 +24,8 @@ func setup(_attacker_dmg: int, _hitbox_lifetime: float, owner_node: Node2D, _off
 		if hitbox_lifetime > 0.0:
 			await get_tree().create_timer(hitbox_lifetime).timeout
 			queue_free()
-
+		print("Player:", follow_target.player_id, " now has a hitbox following them. Test 3 In hitbox")
+		
 func _physics_process(delta):
 	if follow_target:
 		global_position = follow_target.global_position + offset
@@ -43,6 +46,12 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	
 	
+	hurtbox_owner = area.owner_id
+	
+	print("Player:", hurtbox_owner, " touched the hitbox. Test 4 In hitbox")
+	if hurtbox_owner == follow_target.player_id:
+		return
+
 	area.receive_hit(attacker_dmg)
 		
 		

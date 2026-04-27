@@ -24,9 +24,13 @@ func attack():
 		
 			
 		owner_node = get_parent()
+		
+		
 		hitbox.setup(20, 0.2, owner_node, offset)
 		can_attack = false
 		$attack_again_timer.start()
+		
+		print("Player:", owner_node.player_id, " executed attack. Test 2 In AttackComp")
 
 
 func _on_attack_again_timer_timeout() -> void:
