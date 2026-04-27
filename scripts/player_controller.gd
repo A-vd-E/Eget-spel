@@ -5,7 +5,7 @@ const JUMP_VELOCITY := -700.0
 const DASH_SPEED := 900.0
 
 
-@onready var attack_ability: Node = $AttackComponent
+@onready var attack_component: Node = $AttackComponent
 @onready var input_synchronizer = $InputSynchronizer
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
@@ -25,7 +25,7 @@ const DASH_SPEED := 900.0
 var direction: int
 var do_jump := false # Tells player to jump, updated in InputSynchronizer
 var do_dash := false # Tells player to dash, updated in InputSynchronizer
-
+var do_attack := false
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
 
@@ -35,7 +35,7 @@ var can_dash := true # Determines if you can dash, tied to timer
 		#set_multiplayer_authority(name.to_int()) Should be removed
 
 func _ready():
-	add_to_group("players")
+	
  	# Only the client player has a camera enabled, so always 
 	# follows the playable characther
 	if multiplayer.get_unique_id() == player_id:
@@ -52,6 +52,10 @@ func _physics_process(delta: float) -> void:
 		_apply_movement_from_input(delta)
 		sync_position = global_position
 		sync_velocity = velocity
+		
+		if do_attack:
+			attack_component.attack()
+			do_attack = false
 	else:
 		_apply_network_movement(delta)
 		

@@ -1,11 +1,15 @@
-extends Node
+class_name Hurtbox extends Area2D
 
+@onready var owner_health: Node2D = get_parent()
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	monitoring = false
+	monitorable = true
+	
+	set_collision_layer_value(1, true)
+	set_collision_mask_value(1, true)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func receive_hit(damage: int) -> void:
+	owner_health.take_damage(damage)
+	print(owner_health.get_parent().name + "took damage")
