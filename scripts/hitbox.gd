@@ -44,6 +44,7 @@ func _ready() -> void:
 	# Other objects won't detect it for collision
 	monitorable = false
 	area_entered.connect(_on_area_entered)
+	
 
 	
 func _on_area_entered(area: Area2D) -> void:

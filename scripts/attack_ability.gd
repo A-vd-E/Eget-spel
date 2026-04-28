@@ -4,12 +4,10 @@ const HitboxScene = preload("res://scenes/hitbox.tscn")
 
 # The spawnpoint for the hitbox MultiplayerSpawner
 @onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("Hitboxes")
-@onready var input_synchronizer := $"../InputSynchronizer"
+@onready var player := $".."
 
 var can_attack := true
-var offset = Vector2(40, 0)
 var owner_node
-#var direction
 
 
 func attack():
@@ -19,9 +17,11 @@ func attack():
 		var hitbox = HitboxScene.instantiate()
 		hitbox_spawnpoint.add_child(hitbox)
 		
-		#direction = input_synchronizer.input_direction
-		#if direction == -1:
-			#offset.x *= -1
+		
+		
+		var facing_direction = player.facing_direction
+		var offset = Vector2(40, 0) * facing_direction
+		
 		owner_node = get_parent()
 		
 		hitbox.setup(20, 0.2, owner_node, offset)
