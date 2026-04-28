@@ -5,7 +5,7 @@ extends Node2D
 	set(value):
 		sync_health = value
 		health_changed.emit(value)
-
+var owner_id: int # The player that owns the health component 
 
 
 
@@ -21,10 +21,9 @@ func _ready() -> void:
 	
 
 ## Decreases the characters health by the input amount.
-@rpc "call_local"
 func take_damage(damage: int):
 	
-		
+		print( "Player:",owner_id, " took damage. Test 6 In HealthComp" )
 		sync_health = max(sync_health - damage, 0)
 
 		
@@ -38,6 +37,9 @@ func _input(event: InputEvent) -> void:
 
 func dies():
 	died.emit()
-
-
+# Sets the owner id for this node, input taken in "Player" = player_id
+# Assigns the same id to owner id of "Hurtbox"
+func set_owner_id(id):
+	owner_id = id
+	$Hurtbox.set_owner_id(id)
 	
