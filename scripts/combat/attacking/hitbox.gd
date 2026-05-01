@@ -5,6 +5,7 @@ extends Area2D
 @export var hitbox_lifetime: float
 
 var attacker: Node2D
+var attacker_id: int
 var hurtbox_owner
 var knockback_vector: Vector2
 
@@ -19,6 +20,7 @@ func _ready() -> void:
 	# Other objects won't detect it for collision
 	monitorable = false
 	area_entered.connect(_on_area_entered)
+	
 	
 
 func start_lifetime() -> void:
@@ -38,7 +40,7 @@ func _on_area_entered(area: Area2D) -> void:
 	hurtbox_owner = area.owner_id
 	
 	# To prevent self damage
-	if hurtbox_owner == attacker.player_id:
+	if hurtbox_owner == attacker_id:
 		return
 
 	area.receive_hit(attacker_dmg, knockback_vector, global_position)
