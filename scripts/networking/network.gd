@@ -2,6 +2,7 @@ extends Node
 
 const PORT: int = 42069
 var player_scene = preload("res://scenes/player.tscn")
+var enemy_scene = preload("res://scenes/enemy.tscn")
 
 # Changed name to describe its function, and moved to _on_host_button_pressed()
 # so that only the host's/server's sceneTree is the spawnpoint. 
@@ -10,6 +11,8 @@ var player_scene = preload("res://scenes/player.tscn")
 
 #@onready var world = get_node("../World") Removed
 var _player_spawn_node #Replacement
+var _enemy_spawn_node
+var _enemy_id_counter := -1
 
 # Moved logic to "Main" node instead of in networking
 
@@ -27,6 +30,7 @@ func _ready():
 func _become_host() -> void:
 	print("Starting host")
 	_player_spawn_node = get_tree().current_scene.get_node("Players")
+	_enemy_spawn_node = get_tree().current_scene.get_node("Enemies")
 	
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(PORT)
@@ -39,6 +43,9 @@ func _become_host() -> void:
 	
 	
 	_add_player(multiplayer.get_unique_id())
+	
+	_spawn_enemy(Vector2(-400, 300)) # temporary positions and spawns
+	_spawn_enemy(Vector2(500, 100))
 	
 func _join_as_non_host_client(ip_input) -> void:
 	print("Joining as client")
@@ -67,6 +74,18 @@ func _join_as_non_host_client(ip_input) -> void:
 	
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	#request_players.rpc_id(1)
+
+func _spawn_enemy(spawn_position: Vector2) -> void:
+	var enemy = enemy_scene.instantiate()
+	enemy.enemy_id = _enemy_id_counter
+	# Name the node predictably for the MultiplayerSpawner
+	enemy.name = "Enemy_" + str(abs(_enemy_id_counter)) 
+	
+	enemy.global_position = spawn_position
+	
+	_enemy_spawn_node.add_child(enemy)
+	
+	_enemy_id_counter -= 1 # Decrement so next enemy is -2, then -3, etc.
 	
 func _add_player(id):
 	print("Player %s joined the game" % id)
