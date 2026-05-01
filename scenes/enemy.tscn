@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://yrh5oc72g5fs"]
+
+[ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_7p1mj"]
+[ext_resource type="Script" uid="uid://mi0qmve3nya0" path="res://scripts/enemy.gd" id="1_md0e3"]
+[ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="4_ipns3"]
+[ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/hurtbox.gd" id="5_8qclf"]
+[ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="6_w8i8w"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
+properties/0/path = NodePath(".:sync_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:sync_velocity")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:enemy_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath("HealthComponent:sync_health")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:sync_facing_direction")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
+size = Vector2(871.4285, 1614.2856)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
+size = Vector2(842.85706, 1614.2856)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqkch"]
+bg_color = Color(0.19793722, 0.19793725, 0.19793713, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qlg0r"]
+bg_color = Color(0.6439097, 0.04708454, 0.021919081, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c4w8v"]
+size = Vector2(1157.1428, 1728.5713)
+
+[node name="Enemy" type="CharacterBody2D" unique_id=438100406]
+scale = Vector2(0.07, 0.07)
+script = ExtResource("1_md0e3")
+
+[node name="EnemySynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1100668368]
+replication_config = SubResource("SceneReplicationConfig_tuyoq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545070164]
+modulate = Color(1, 0.1973423, 0.112079225, 1)
+texture = ExtResource("1_7p1mj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1171786639]
+position = Vector2(-7.142863, 35.714314)
+shape = SubResource("RectangleShape2D_g2els")
+
+[node name="HealthComponent" type="Node2D" parent="." unique_id=1504426426]
+script = ExtResource("4_ipns3")
+max_health = 50
+
+[node name="Hurtbox" type="Area2D" parent="HealthComponent" unique_id=1690071242]
+script = ExtResource("5_8qclf")
+
+[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="HealthComponent/Hurtbox" unique_id=1133688344]
+position = Vector2(7.1428432, 35.71429)
+shape = SubResource("RectangleShape2D_qlg0r")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1718776609 node_paths=PackedStringArray("health")]
+offset_left = -728.5714
+offset_top = -1314.2856
+offset_right = 728.5714
+offset_bottom = -1214.2858
+theme_override_styles/background = SubResource("StyleBoxFlat_dqkch")
+theme_override_styles/fill = SubResource("StyleBoxFlat_qlg0r")
+show_percentage = false
+script = ExtResource("6_w8i8w")
+health = NodePath("../HealthComponent")
+
+[node name="DamageArea" type="Area2D" parent="." unique_id=180178718]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=1392092458]
+position = Vector2(-7.14283, -21.428568)
+shape = SubResource("RectangleShape2D_c4w8v")
+
+[node name="DamageTimer" type="Timer" parent="." unique_id=1605518414]
+wait_time = 0.5
+
+[node name="EdgeCheckLeft" type="RayCast2D" parent="." unique_id=1089003188]
+position = Vector2(-450, 700)
+target_position = Vector2(0, 200)
+
+[node name="EdgeCheckRight" type="RayCast2D" parent="." unique_id=1810134075]
+position = Vector2(450, 700)
+target_position = Vector2(0, 200)
