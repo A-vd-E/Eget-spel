@@ -1,6 +1,7 @@
 extends Node2D
 
-const HitboxScene = preload("res://scenes/hitbox.tscn")
+const MeleeHitboxScene = preload("res://scenes/melee_hitbox.tscn")
+const ProjectileHitboxScene = preload("res://scenes/projectile_hitbox.tscn")
 
 # The spawnpoint for the hitbox MultiplayerSpawner
 @onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("Hitboxes")
@@ -14,7 +15,7 @@ var owner_node
 
 func attack():
 	if can_attack: 
-		var hitbox = HitboxScene.instantiate()
+		var hitbox = MeleeHitboxScene.instantiate()
 		hitbox_spawnpoint.add_child(hitbox)
 		
 		var facing_direction = player.facing_direction
@@ -26,6 +27,16 @@ func attack():
 		$attack_again_timer.start()
 		
 
-
+func ranged_attack():
+	if can_attack: 
+		var hitbox = ProjectileHitboxScene.instantiate()
+		hitbox_spawnpoint.add_child(hitbox)
+		
+		var facing_direction = player.facing_direction
+		owner_node = get_parent()
+		
+		hitbox.setup(20, 0.5, owner_node, facing_direction, base_knockback)
+		can_attack = false
+		$attack_again_timer.start()
 func _on_attack_again_timer_timeout() -> void:
 	can_attack = true
