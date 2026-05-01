@@ -31,11 +31,12 @@ var do_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
 
+var knockback_stun_time_left := 0.0
+
 
 func _ready():
-	
-
 	$HealthComponent.set_owner_id(player_id)
+	$HealthComponent.knockback_received.connect(_on_knockback_received)
 	
  	# Only the client player has a camera enabled, so always 
 	# follows the playable characther
@@ -49,18 +50,17 @@ func _ready():
 
 # Moved most things to _apply_movement_from_input
 func _physics_process(delta: float) -> void:
-	
 	if multiplayer.is_server(): 
-		
 		moving_direction = input_synchronizer.input_direction
-		facing_direction = moving_direction
+		
+		if moving_direction != 0 and knockback_stun_time_left <= 0.0:
+			facing_direction = moving_direction
 		
 		_apply_movement_from_input(delta)
 		sync_position = global_position
 		sync_velocity = velocity
 		
 		if do_attack:
-			print("Player:",player_id, " called attack. Test 1 In Player")
 			attack_component.attack()
 			do_attack = false
 	else:
@@ -86,6 +86,14 @@ func _apply_network_movement(_delta):
 
 ## Manages basic movement, namely jumping and walking.
 func _apply_movement_from_input(delta):
+	if knockback_stun_time_left > 0.0:
+		knockback_stun_time_left -= delta
+		if not is_on_floor():
+			velocity += get_gravity() * delta
+		# Apply friction to slow down horizontal slide
+		velocity.x = move_toward(velocity.x, 0, 1000 * delta) 
+		move_and_slide()
+		return # Exit early so player input is ignored during stun!
 	
 	# Handles gravity
 	if not is_on_floor() and not dashing:
@@ -108,14 +116,17 @@ func _apply_movement_from_input(delta):
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 	
 	move_and_slide()
+	
+func _on_knockback_received(knockback: Vector2) -> void:
+	if multiplayer.is_server():
+		velocity = knockback
+		knockback_stun_time_left = 0.3 # 300 milliseconds of stun
+		# Cancel active states
+		do_jump = false
+		do_dash = false
+		dashing = false
 
-
-# CURRENT BUG!!!
-## The player dashes forward in a straight line, dash is
-## then placed on cooldown.
 func dash():
-	
-	
 	dashing = true
 	can_dash = false
 	# Dash duration

@@ -12,9 +12,8 @@ func _ready() -> void:
 	
 	
 
-func receive_hit(damage: int) -> void:
-	player_health.take_damage(damage)
-	print("Player:", owner_id, " called take damage. Test 5 In Hurtbox")
+func receive_hit(damage: int, base_knockback: Vector2 = Vector2.ZERO, source_position: Vector2 = Vector2.ZERO) -> void:
+	player_health.take_damage(damage, base_knockback, source_position)
 	
 
 

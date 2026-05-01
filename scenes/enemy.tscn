@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://yrh5oc72g5fs"]
+[gd_scene format=3 uid="uid://d00ua32coljuv"]
 
 [ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://mi0qmve3nya0" path="res://scripts/enemy.gd" id="1_md0e3"]

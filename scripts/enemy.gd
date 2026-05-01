@@ -22,6 +22,7 @@ enum AIState { PATROL, CHASE }
 
 var current_state: AIState = AIState.PATROL
 var target_player: CharacterBody2D = null
+var knockback_stun_time_left := 0.0
 
 @onready var health_component: Node2D = $HealthComponent
 @onready var damage_area: Area2D = $DamageArea
@@ -33,6 +34,8 @@ var target_player: CharacterBody2D = null
 func _ready() -> void:
 	health_component.set_owner_id(enemy_id)
 	health_component.died.connect(_on_died)
+	
+	health_component.knockback_received.connect(_on_knockback_received)
 	
 	if multiplayer.is_server():
 		sync_position = global_position
@@ -51,6 +54,15 @@ func _server_physics(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		
+	# Handle knockback stun state
+	if knockback_stun_time_left > 0.0:
+		knockback_stun_time_left -= delta
+		velocity.x = move_toward(velocity.x, 0, 1000 * delta) # Apply friction
+		move_and_slide()
+		sync_position = global_position
+		sync_velocity = velocity
+		return # Skip AI logic while stunned
+	
 	_evaluate_target_and_state()
 	
 	match current_state:
@@ -63,6 +75,11 @@ func _server_physics(delta: float) -> void:
 	
 	sync_position = global_position
 	sync_velocity = velocity
+
+func _on_knockback_received(knockback: Vector2) -> void:
+	if multiplayer.is_server():
+		velocity = knockback
+		knockback_stun_time_left = 0.3 # 300ms stun
 
 func _evaluate_target_and_state() -> void:
 	var closest_player = _get_closest_player()
@@ -151,7 +168,7 @@ func _on_damage_timer_timeout() -> void:
 func _try_damage(area: Area2D) -> bool:
 	if area.has_method("receive_hit") and area.get("owner_id") != null:
 		if area.owner_id > 0:
-			area.receive_hit(damage)
+			area.receive_hit(damage, Vector2(400, -800), global_position)
 			return true
 	return false
 
