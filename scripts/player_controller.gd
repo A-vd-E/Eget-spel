@@ -27,7 +27,8 @@ var facing_direction := 1: # Latest facing moving_direction
 		
 var do_jump := false # Tells player to jump, updated in InputSynchronizer
 var do_dash := false # Tells player to dash, updated in InputSynchronizer
-var do_attack := false # Tells player to attack, updated in InputSynchronizer
+var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
+var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
 
@@ -60,9 +61,13 @@ func _physics_process(delta: float) -> void:
 		sync_position = global_position
 		sync_velocity = velocity
 		
-		if do_attack:
+		if do_melee_attack:
 			attack_component.attack()
-			do_attack = false
+			do_melee_attack = false
+			
+		if do_ranged_attack:
+			attack_component.ranged_attack()
+			do_ranged_attack = false
 	else:
 		_apply_network_movement(delta)
 		

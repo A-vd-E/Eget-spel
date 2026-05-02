@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://d00ua32coljuv"]
 
 [ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_7p1mj"]
-[ext_resource type="Script" uid="uid://mi0qmve3nya0" path="res://scripts/enemy.gd" id="1_md0e3"]
-[ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/health.gd" id="4_ipns3"]
-[ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/hurtbox.gd" id="5_8qclf"]
-[ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/health_bar.gd" id="6_w8i8w"]
+[ext_resource type="Script" uid="uid://mi0qmve3nya0" path="res://scripts/combat/enemy.gd" id="1_md0e3"]
+[ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/combat/health.gd" id="4_ipns3"]
+[ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/combat/hurtbox.gd" id="5_8qclf"]
+[ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/combat/health_bar.gd" id="6_w8i8w"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:sync_position")

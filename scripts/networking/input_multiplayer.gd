@@ -27,10 +27,12 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("dash"):
 		dash.rpc_id(1)
 		
-	if Input.is_action_just_pressed("attack"):
-		attck.rpc_id(1)
+	if Input.is_action_just_pressed("melee_attack"):
+		melee_attack.rpc_id(1)
 
-		
+	if Input.is_action_just_pressed("ranged_attack"):
+		ranged_attack.rpc_id(1)
+
 # RPC:s allow the clients to communicate input to the server
 # call_local as argument so the host (both client and server) can
 # talk to the itself (client part to server part). If I've understood 
@@ -53,9 +55,14 @@ func dash():
 	if multiplayer.is_server():
 		player.do_dash = true
 @rpc("call_local", "any_peer")
-func attck():
+func melee_attack():
 	if multiplayer.is_server():
-		player.do_attack = true			
+		player.do_melee_attack = true	
+		
+@rpc("call_local", "any_peer")
+func ranged_attack():
+	if multiplayer.is_server():
+		player.do_ranged_attack = true		
 # To avoid "storing" a jump if jump button pressed mid-air
 func _on_jump_buffer_timer_timeout() -> void:
 	if multiplayer.is_server():

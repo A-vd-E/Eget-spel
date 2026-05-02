@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://df0mg3qgt5xtb"]
+
+[ext_resource type="Script" uid="uid://dllknt1utxr3t" path="res://scripts/combat/attacking/projectile_hitbox.gd" id="1_k02ly"]
+[ext_resource type="Texture2D" uid="uid://bp2sjhgnpix2x" path="res://icon.svg" id="2_gfcd1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0vdsg"]
+radius = 11.401754
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k02ly"]
+properties/0/path = NodePath(".:global_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="ProjectileHitbox" type="Area2D" unique_id=2116740723]
+script = ExtResource("1_k02ly")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1484465355]
+shape = SubResource("CircleShape2D_0vdsg")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=321609941]
+replication_config = SubResource("SceneReplicationConfig_k02ly")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=550591151]
+scale = Vector2(0.13671875, 0.13671875)
+texture = ExtResource("2_gfcd1")

@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://dpqj4j2io8od3"]
 
 [ext_resource type="Texture2D" uid="uid://mkvb4x6y3aao" path="res://assets/images/tilesheet_complete.png" id="1_6kdnw"]
+[ext_resource type="PackedScene" uid="uid://dk4rrhsmmcx60" path="res://environmental_hazard.tscn" id="2_rp871"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rp871"]
 texture = ExtResource("1_6kdnw")
@@ -342,3 +343,6 @@ z_index = 2
 position = Vector2(-128, 192)
 tile_map_data = PackedByteArray("AAAvAAMAAQAFAAAAAAAwAAMAAQAHAAAAAAAtAAMAAQAHAAAAAAAsAAMAAQAGAAAAAAArAAMAAQAGAAAAAAAqAAMAAQAFAAAAAAApAAQAAQAHAAAAAAAoAAQAAQAGAAAAAAAnAAQAAQAGAAAAAAAmAAQAAQAGAAAAAAAlAAQAAQAFAAAAAAAlAAUAAQAHAAAAAAAkAAUAAQAGAAAAAAAjAAUAAQAFAAAAAAAiAAQAAQAHAAAAAAAhAAQAAQAGAAAAAAAgAAQAAQAFAAAAAAD5/wQAAQAGAAAAAAD4/wQAAQAFAAAAAAD7/wQAAQAHAAAAAAD6/wQAAQAGAAAAAAA=")
 tile_set = SubResource("TileSet_scryw")
+
+[node name="RigidBody2D" parent="." unique_id=1466981356 instance=ExtResource("2_rp871")]
+position = Vector2(-493, 16)
