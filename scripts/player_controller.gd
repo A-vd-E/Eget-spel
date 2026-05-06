@@ -7,6 +7,8 @@ const DASH_SPEED := 900.0
 
 @onready var attack_component: Node = $AttackComponent
 @onready var input_synchronizer = $InputSynchronizer
+@onready var animation_player = $AnimationPlayer
+@onready var visuals = $Visuals
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
 @export var correction_strength := 10.0 # Higher means more aggresive correction
@@ -17,7 +19,7 @@ const DASH_SPEED := 900.0
 		$InputSynchronizer.set_multiplayer_authority(id) 
 
 var moving_direction: int
-var facing_direction := 1: # Latest facing moving_direction
+@export var facing_direction := 1: # Latest facing moving_direction
 	set(value):
 		if value == 0:
 			return
@@ -47,6 +49,12 @@ func _ready():
 		$Camera2D.enabled = false
 	
 	sync_position = global_position
+
+func _process(delta: float) -> void:
+	if facing_direction == -1:
+		visuals.scale.x = -1
+	elif facing_direction == 1:
+		visuals.scale.x = 1
 	
 
 # Moved most things to _apply_movement_from_input
@@ -63,6 +71,7 @@ func _physics_process(delta: float) -> void:
 		
 		if do_melee_attack:
 			attack_component.attack()
+			rpc_play_animation.rpc("melee_attack")
 			do_melee_attack = false
 			
 		if do_ranged_attack:
@@ -130,6 +139,10 @@ func _on_knockback_received(knockback: Vector2) -> void:
 		do_jump = false
 		do_dash = false
 		dashing = false
+		
+@rpc("call_local", "authority", "reliable")
+func rpc_play_animation(anim_name: String):
+	animation_player.play(anim_name)
 
 func dash():
 	dashing = true
