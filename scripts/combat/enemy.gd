@@ -93,6 +93,12 @@ func _evaluate_target_and_state() -> void:
 		if not is_instance_valid(target_player) or global_position.distance_to(target_player.global_position) > lose_interest_distance:
 			target_player = null
 			current_state = AIState.PATROL
+		# Switch to a closer player if one exists within chase range
+		elif closest_player and closest_player != target_player:
+			var dist_to_closest = global_position.distance_to(closest_player.global_position)
+			var dist_to_current = global_position.distance_to(target_player.global_position)
+			if dist_to_closest < dist_to_current and dist_to_closest <= chase_distance:
+				target_player = closest_player
 
 func _process_patrol_state() -> void:
 	if is_on_wall() or _is_at_edge():
@@ -103,8 +109,15 @@ func _process_patrol_state() -> void:
 func _process_chase_state() -> void:
 	if not is_instance_valid(target_player):
 		return
+	
+	var x_diff = target_player.global_position.x - global_position.x
+
+	# If the player is nearly directly above/below, stop horizontal movement
+	if abs(x_diff) < 10.0:
+		velocity.x = 0
+		return
 		
-	var direction_to_target = sign(target_player.global_position.x - global_position.x)
+	var direction_to_target = sign(x_diff)
 	
 	if direction_to_target != 0 and direction_to_target != sync_facing_direction:
 		_update_facing_direction(direction_to_target)
