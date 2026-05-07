@@ -8,6 +8,10 @@
 [ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/combat/hurtbox.gd" id="4_tuyoq"]
 [ext_resource type="Script" uid="uid://csf0ypjefua5c" path="res://scripts/combat/attacking/attack_ability.gd" id="7_fjrip"]
 [ext_resource type="Texture2D" uid="uid://c566agru67r15" path="res://assets/images/Screenshot from 2026-04-28 13-41-57.png" id="8_smehm"]
+[ext_resource type="Script" uid="uid://bmoimaulsf86r" path="res://scripts/states/state_machine.gd" id="8_ur7pv"]
+[ext_resource type="Script" uid="uid://cgsfsyyqyr1xh" path="res://scripts/states/idle_state.gd" id="9_y4r1p"]
+[ext_resource type="Script" uid="uid://bmtsnkf7xk3ws" path="res://scripts/states/jump_state.gd" id="10_d2wvv"]
+[ext_resource type="Script" uid="uid://c0arskwrttllr" path="res://scripts/states/walk_state.gd" id="11_3v2ag"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:player_id")
@@ -173,6 +177,23 @@ color = Color(0.61339027, 0.61339027, 0.61339027, 1)
 [node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=1545070164]
 position = Vector2(-85.71429, 0)
 texture = ExtResource("1_3vyb7")
+
+[node name="StateMachine" type="Node" parent="." unique_id=1548200579 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("8_ur7pv")
+initial_state = NodePath("IdleState")
+metadata/_custom_type_script = "uid://bmoimaulsf86r"
+
+[node name="IdleState" type="Node" parent="StateMachine" unique_id=1389880217]
+script = ExtResource("9_y4r1p")
+metadata/_custom_type_script = "uid://cgsfsyyqyr1xh"
+
+[node name="JumpState" type="Node" parent="StateMachine" unique_id=47813447]
+script = ExtResource("10_d2wvv")
+metadata/_custom_type_script = "uid://bmtsnkf7xk3ws"
+
+[node name="WalkState" type="Node" parent="StateMachine" unique_id=205268049]
+script = ExtResource("11_3v2ag")
+metadata/_custom_type_script = "uid://c0arskwrttllr"
 
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
