@@ -144,7 +144,7 @@ func _update_facing_direction(new_direction: int) -> void:
 	$Sprite2D.flip_h = (sync_facing_direction == -1)
 
 func _get_closest_player() -> CharacterBody2D:
-	var players_node = get_tree().current_scene.get_node_or_null("Players")
+	var players_node = get_tree().current_scene.get_node_or_null("SpawningContainers/Players")
 	if not is_instance_valid(players_node):
 		return null
 		

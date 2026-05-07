@@ -29,8 +29,8 @@ func _ready():
 
 func _become_host() -> void:
 	print("Starting host")
-	_player_spawn_node = get_tree().current_scene.get_node("Players")
-	_enemy_spawn_node = get_tree().current_scene.get_node("Enemies")
+	_player_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Players")
+	_enemy_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Enemies")
 	
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(PORT)

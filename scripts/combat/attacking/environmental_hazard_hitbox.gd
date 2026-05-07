@@ -1,7 +1,7 @@
 extends Node
 const MeleeHitboxScene = preload("res://scenes/melee_hitbox.tscn")
 
-@onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("Hitboxes")
+@onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("SpawningContainers").get_node("Hitboxes")
 var owner_node = self
 var attacker_id = -1000
 @export var base_knockback := Vector2(700, -400)
