@@ -2,7 +2,12 @@ extends Node
 
 class_name State
 
+
+
 var state_machine: StateMachine
+var character:
+	get:
+		return state_machine.get_parent()
 
 # For initialization 
 func enter():

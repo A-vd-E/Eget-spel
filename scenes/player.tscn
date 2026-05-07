@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://cgsfsyyqyr1xh" path="res://scripts/states/idle_state.gd" id="9_y4r1p"]
 [ext_resource type="Script" uid="uid://bmtsnkf7xk3ws" path="res://scripts/states/jump_state.gd" id="10_d2wvv"]
 [ext_resource type="Script" uid="uid://c0arskwrttllr" path="res://scripts/states/walk_state.gd" id="11_3v2ag"]
+[ext_resource type="Script" uid="uid://bij3pej27y3os" path="res://scripts/states/dash_state.gd" id="12_3v2ag"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:player_id")
@@ -112,11 +113,8 @@ wait_time = 0.1
 position = Vector2(-42.857143, 28.57143)
 shape = SubResource("RectangleShape2D_g2els")
 
-[node name="dash_timer" type="Timer" parent="." unique_id=675862883]
-wait_time = 0.2
-
-[node name="dash_again_timer" type="Timer" parent="." unique_id=842854450]
-wait_time = 0.5
+[node name="Node2D" type="Node2D" parent="." unique_id=1405311707]
+position = Vector2(0, -2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
 position_smoothing_speed = 9.0
@@ -195,7 +193,17 @@ metadata/_custom_type_script = "uid://bmtsnkf7xk3ws"
 script = ExtResource("11_3v2ag")
 metadata/_custom_type_script = "uid://c0arskwrttllr"
 
+[node name="DashState" type="Node" parent="StateMachine" unique_id=704110877]
+script = ExtResource("12_3v2ag")
+metadata/_custom_type_script = "uid://bij3pej27y3os"
+
+[node name="dash_again_timer" type="Timer" parent="StateMachine/DashState" unique_id=842854450]
+wait_time = 0.5
+
+[node name="dash_timer" type="Timer" parent="StateMachine/DashState" unique_id=675862883]
+wait_time = 0.2
+
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
-[connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
-[connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
 [connection signal="timeout" from="AttackComponent/attack_again_timer" to="AttackComponent" method="_on_attack_again_timer_timeout"]
+[connection signal="timeout" from="StateMachine/DashState/dash_again_timer" to="StateMachine/DashState" method="_on_dash_again_timer_timeout"]
+[connection signal="timeout" from="StateMachine/DashState/dash_timer" to="StateMachine/DashState" method="_on_dash_timer_timeout"]

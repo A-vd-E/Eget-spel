@@ -9,6 +9,7 @@ const DASH_SPEED := 900.0
 @onready var input_synchronizer = $InputSynchronizer
 @onready var animation_player = $AnimationPlayer
 @onready var visuals = $Visuals
+@onready var state_machine = $StateMachine
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
 @export var correction_strength := 10.0 # Higher means more aggresive correction
@@ -65,6 +66,8 @@ func _physics_process(delta: float) -> void:
 		if moving_direction != 0 and knockback_stun_time_left <= 0.0:
 			facing_direction = moving_direction
 		
+		state_machine.physics_update(delta)
+		move_and_slide()
 		_apply_movement_from_input(delta)
 		sync_position = global_position
 		sync_velocity = velocity
@@ -77,6 +80,7 @@ func _physics_process(delta: float) -> void:
 		if do_ranged_attack:
 			attack_component.ranged_attack()
 			do_ranged_attack = false
+			
 	else:
 		_apply_network_movement(delta)
 		
@@ -109,28 +113,13 @@ func _apply_movement_from_input(delta):
 		move_and_slide()
 		return # Exit early so player input is ignored during stun!
 	
-	# Handles gravity
-	if not is_on_floor() and not dashing:
-		velocity += get_gravity() * delta
 	
-	# Handles jump.
-	if do_jump and is_on_floor() and not dashing:
-		velocity.y = JUMP_VELOCITY
-		do_jump = false
 	
-	# Handles dashing
-	if do_dash and can_dash:
-		dash()
-		do_dash = false
-	
-	if not dashing:
-		if moving_direction:
-			velocity.x = moving_direction * SPEED
-		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-	
-	move_and_slide()
-	
+	## Handles dashing
+	#if do_dash and can_dash:
+		#dash()
+		#do_dash = false
+	#
 func _on_knockback_received(knockback: Vector2) -> void:
 	if multiplayer.is_server():
 		velocity = knockback
@@ -144,22 +133,25 @@ func _on_knockback_received(knockback: Vector2) -> void:
 func rpc_play_animation(anim_name: String):
 	animation_player.play(anim_name)
 
-func dash():
-	dashing = true
-	can_dash = false
-	# Dash duration
-	$dash_timer.start()
-	# Dash cooldown
-	$dash_again_timer.start()
-	velocity.x =  facing_direction * DASH_SPEED 
-	
-	velocity.y = 0
+#func dash():
+	#dashing = true
+	#can_dash = false
+	## Dash duration
+	#$dash_timer.start()
+	## Dash cooldown
+	#$dash_again_timer.start()
+	#velocity.x =  facing_direction * DASH_SPEED 
+	#
+	#velocity.y = 0
 
 
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity += get_gravity() * delta
 
-func _on_dash_timer_timeout() -> void:
-	dashing = false
-
-
-func _on_dash_again_timer_timeout() -> void:
-	can_dash = true
+#func _on_dash_timer_timeout() -> void:
+	#dashing = false
+#
+#
+#func _on_dash_again_timer_timeout() -> void:
+	#can_dash = true

@@ -3,17 +3,34 @@ class_name JumpState
 
 func enter():
 	print("Entering jump state")
-	var character = state_machine.get_parent()
 	
+	if character.do_jump and character.is_on_floor() and not character.dashing:
+		character.velocity.y = character.JUMP_VELOCITY
+		character.do_jump = false
 	
 func physics_update(delta: float):
-	var character = state_machine.get_parent()
 	
-	var direction = Input.get_axis("left", "right")
+	character.apply_gravity(delta)
+	if character.moving_direction:
+		character.velocity.x = character.moving_direction * character.SPEED
+	
+	# Handles jump.
+	
+	
+	if character.moving_direction == 0:
+		character.velocity.x = move_toward(
+			character.velocity.x,
+			0, 
+			character.SPEED)
+	if character.do_dash and character.can_dash:
+		state_machine.change_state("dashstate")
 	
 	if character.is_on_floor():
-		if direction != 0:
+		if character.moving_direction != 0:
+			print("Teesting")
 			state_machine.change_state(	"walkstate")
-		elif direction == 0:
+			return
+		elif character.moving_direction == 0:
 			print("Test why")
 			state_machine.change_state(	"idlestate")
+			return

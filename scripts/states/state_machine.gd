@@ -15,23 +15,26 @@ func _ready() -> void:
 	if initial_state:
 		change_state(initial_state.name.to_lower())
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func update(delta: float) -> void:
 	if current_state:
 		current_state.update(delta)
 	
-func _physics_process(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if current_state:
 		current_state.physics_update(delta)
 	
-func _input(event: InputEvent) -> void:
-	if current_state:
-		current_state.handle_input(event)
-	
+
 func change_state(new_state_name: String) -> void:
+	
+	var new_state = states.get(new_state_name.to_lower())
+	
+	if current_state == new_state:
+		return
 	if current_state:
 		current_state.exit()
 		
-	current_state = states.get(new_state_name.to_lower())
+	current_state = new_state
+	
 	
 	if current_state:
 		current_state.enter()

@@ -6,13 +6,21 @@ func enter():
 
 # For movement
 func physics_update(delta: float):
-	var character = state_machine.get_parent()
-	var direction = Input.get_axis("left", "right")
 	
-	if direction == 0:
+	if not character.is_on_floor():
+		character.apply_gravity(delta)
+	
+	if character.moving_direction == 0:
 		state_machine.change_state("idlestate")
 		return
-
-func handle_input(event: InputEvent):
-	if Input.is_action_pressed("jump"):
+	
+	if character.do_jump and character.is_on_floor():
 		state_machine.change_state("jumpstate")
+		return
+	
+	if character.do_dash and character.can_dash:
+		state_machine.change_state("dashstate")
+	
+	if character.moving_direction:
+		character.velocity.x = character.moving_direction * character.SPEED
+	
