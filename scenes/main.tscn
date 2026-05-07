@@ -31,27 +31,31 @@ alignment = 1
 
 [node name="World1" parent="World" unique_id=1309825274 instance=ExtResource("2_0wfyh")]
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=889647496]
-_spawnable_scenes = PackedStringArray("uid://bjrksfoia06k5")
-spawn_path = NodePath("../Players")
+[node name="MultiplayerSpawners" type="Node" parent="." unique_id=1209203734]
 
-[node name="Players" type="Node2D" parent="." unique_id=1034175516]
-
-[node name="MeleeHitboxSpawner" type="MultiplayerSpawner" parent="." unique_id=1319518443]
-_spawnable_scenes = PackedStringArray("uid://dc7a3k21uhv4r")
-spawn_path = NodePath("../Hitboxes")
-
-[node name="ProjectileHitboxSpawner" type="MultiplayerSpawner" parent="." unique_id=319448720]
-_spawnable_scenes = PackedStringArray("uid://df0mg3qgt5xtb")
-spawn_path = NodePath("../Hitboxes")
-
-[node name="Hitboxes" type="Node2D" parent="." unique_id=778308688]
-
-[node name="Enemies" type="Node2D" parent="." unique_id=1551223450]
-
-[node name="EnemySpawner" type="MultiplayerSpawner" parent="." unique_id=388403110]
+[node name="EnemySpawner" type="MultiplayerSpawner" parent="MultiplayerSpawners" unique_id=388403110]
 _spawnable_scenes = PackedStringArray("uid://d00ua32coljuv")
-spawn_path = NodePath("../Enemies")
+spawn_path = NodePath("../../SpawningContainers/Enemies")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="MultiplayerSpawners" unique_id=889647496]
+_spawnable_scenes = PackedStringArray("uid://bjrksfoia06k5")
+spawn_path = NodePath("../../SpawningContainers/Players")
+
+[node name="MeleeHitboxSpawner" type="MultiplayerSpawner" parent="MultiplayerSpawners" unique_id=1319518443]
+_spawnable_scenes = PackedStringArray("uid://dc7a3k21uhv4r")
+spawn_path = NodePath("../../SpawningContainers/Hitboxes")
+
+[node name="ProjectileHitboxSpawner" type="MultiplayerSpawner" parent="MultiplayerSpawners" unique_id=319448720]
+_spawnable_scenes = PackedStringArray("uid://df0mg3qgt5xtb")
+spawn_path = NodePath("../../SpawningContainers/Hitboxes")
+
+[node name="SpawningContainers" type="Node" parent="." unique_id=1850739128]
+
+[node name="Enemies" type="Node2D" parent="SpawningContainers" unique_id=1551223450]
+
+[node name="Players" type="Node2D" parent="SpawningContainers" unique_id=1034175516]
+
+[node name="Hitboxes" type="Node2D" parent="SpawningContainers" unique_id=778308688]
 
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]

@@ -62,7 +62,7 @@ func _physics_process(delta: float) -> void:
 		sync_velocity = velocity
 		
 		if do_melee_attack:
-			attack_component.attack()
+			attack_component.melee_attack()
 			do_melee_attack = false
 			
 		if do_ranged_attack:

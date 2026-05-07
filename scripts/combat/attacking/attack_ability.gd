@@ -4,7 +4,7 @@ const MeleeHitboxScene = preload("res://scenes/melee_hitbox.tscn")
 const ProjectileHitboxScene = preload("res://scenes/projectile_hitbox.tscn")
 
 # The spawnpoint for the hitbox MultiplayerSpawner
-@onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("Hitboxes")
+@onready var hitbox_spawnpoint: Node2D = get_tree().current_scene.get_node("SpawningContainers").get_node("Hitboxes")
 @onready var player := $".."
 
 @export var base_knockback := Vector2(700, -400)
@@ -14,7 +14,7 @@ var can_attack := true
 var owner_node
 
 
-func attack():
+func melee_attack():
 	if can_attack: 
 		var hitbox = MeleeHitboxScene.instantiate()
 		hitbox_spawnpoint.add_child(hitbox, true)
