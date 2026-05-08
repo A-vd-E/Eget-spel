@@ -2,13 +2,17 @@ extends State
 class_name JumpState
 
 func enter():
-	print("Entering jump state")
+	#print("Entering jump state")
 	
 	if character.do_jump and character.is_on_floor() and not character.dashing:
 		character.velocity.y = character.JUMP_VELOCITY
 		character.do_jump = false
 	
 func physics_update(delta: float):
+	
+	if character.movement_locked:
+		state_machine.change_state("idlestate")
+		return
 	
 	character.apply_gravity(delta)
 	if character.moving_direction:
@@ -27,10 +31,10 @@ func physics_update(delta: float):
 	
 	if character.is_on_floor():
 		if character.moving_direction != 0:
-			print("Teesting")
+
 			state_machine.change_state(	"walkstate")
 			return
 		elif character.moving_direction == 0:
-			print("Test why")
+
 			state_machine.change_state(	"idlestate")
 			return

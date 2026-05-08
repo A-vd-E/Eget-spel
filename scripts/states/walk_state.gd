@@ -2,10 +2,14 @@ extends State
 class_name WalkState
 
 func enter():
-	print("Entering walk state")
-
+	#print("Entering walk state")
+	pass
 # For movement
 func physics_update(delta: float):
+	
+	if character.movement_locked:
+		state_machine.change_state("idlestate")
+		return
 	
 	if not character.is_on_floor():
 		character.apply_gravity(delta)

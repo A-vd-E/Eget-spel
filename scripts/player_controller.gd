@@ -9,9 +9,10 @@ const DASH_SPEED := 900.0
 @onready var input_synchronizer = $InputSynchronizer
 @onready var animation_player = $AnimationPlayer
 @onready var visuals = $Visuals
-@onready var state_machine = $StateMachine
+@onready var state_machine = $MovementStateMachine
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
+@export var respawn_point: Vector2 = Vector2(0, 0)
 @export var correction_strength := 10.0 # Higher means more aggresive correction
 @export var player_id := 1:  # Will match Multiplayer.unique_id
 	set(id):
@@ -22,6 +23,8 @@ const DASH_SPEED := 900.0
 var moving_direction: int
 @export var facing_direction := 1: # Latest facing moving_direction
 	set(value):
+		if movement_locked:
+			return
 		if value == 0:
 			return
 		if facing_direction == value:
@@ -34,7 +37,7 @@ var do_melee_attack := false # Tells player to attack, updated in InputSynchroni
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
-
+var movement_locked := false
 var knockback_stun_time_left := 0.0
 
 

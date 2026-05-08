@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://bmtsnkf7xk3ws" path="res://scripts/states/jump_state.gd" id="10_d2wvv"]
 [ext_resource type="Script" uid="uid://c0arskwrttllr" path="res://scripts/states/walk_state.gd" id="11_3v2ag"]
 [ext_resource type="Script" uid="uid://bij3pej27y3os" path="res://scripts/states/dash_state.gd" id="12_3v2ag"]
+[ext_resource type="Script" uid="uid://bvr046aph7mv7" path="res://scripts/states/alive_state.gd" id="14_oprun"]
+[ext_resource type="Script" uid="uid://bcp4ynm217us8" path="res://scripts/states/death_state.gd" id="15_a8ls1"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:player_id")
@@ -176,34 +178,51 @@ color = Color(0.61339027, 0.61339027, 0.61339027, 1)
 position = Vector2(-85.71429, 0)
 texture = ExtResource("1_3vyb7")
 
-[node name="StateMachine" type="Node" parent="." unique_id=1548200579 node_paths=PackedStringArray("initial_state")]
+[node name="MovementStateMachine" type="Node" parent="." unique_id=1548200579 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("8_ur7pv")
 initial_state = NodePath("IdleState")
 metadata/_custom_type_script = "uid://bmoimaulsf86r"
 
-[node name="IdleState" type="Node" parent="StateMachine" unique_id=1389880217]
+[node name="IdleState" type="Node" parent="MovementStateMachine" unique_id=1389880217]
 script = ExtResource("9_y4r1p")
 metadata/_custom_type_script = "uid://cgsfsyyqyr1xh"
 
-[node name="JumpState" type="Node" parent="StateMachine" unique_id=47813447]
+[node name="JumpState" type="Node" parent="MovementStateMachine" unique_id=47813447]
 script = ExtResource("10_d2wvv")
 metadata/_custom_type_script = "uid://bmtsnkf7xk3ws"
 
-[node name="WalkState" type="Node" parent="StateMachine" unique_id=205268049]
+[node name="WalkState" type="Node" parent="MovementStateMachine" unique_id=205268049]
 script = ExtResource("11_3v2ag")
 metadata/_custom_type_script = "uid://c0arskwrttllr"
 
-[node name="DashState" type="Node" parent="StateMachine" unique_id=704110877]
+[node name="DashState" type="Node" parent="MovementStateMachine" unique_id=704110877]
 script = ExtResource("12_3v2ag")
 metadata/_custom_type_script = "uid://bij3pej27y3os"
 
-[node name="dash_again_timer" type="Timer" parent="StateMachine/DashState" unique_id=842854450]
+[node name="dash_again_timer" type="Timer" parent="MovementStateMachine/DashState" unique_id=842854450]
 wait_time = 0.5
 
-[node name="dash_timer" type="Timer" parent="StateMachine/DashState" unique_id=675862883]
+[node name="dash_timer" type="Timer" parent="MovementStateMachine/DashState" unique_id=675862883]
 wait_time = 0.2
+
+[node name="CombatStateMachine" type="Node" parent="." unique_id=828353105 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("8_ur7pv")
+initial_state = NodePath("AliveState")
+metadata/_custom_type_script = "uid://bmoimaulsf86r"
+
+[node name="AliveState" type="Node" parent="CombatStateMachine" unique_id=839608632]
+script = ExtResource("14_oprun")
+metadata/_custom_type_script = "uid://bvr046aph7mv7"
+
+[node name="DeathState" type="Node" parent="CombatStateMachine" unique_id=42384345]
+script = ExtResource("15_a8ls1")
+metadata/_custom_type_script = "uid://bcp4ynm217us8"
+
+[node name="automatic_revival_timer" type="Timer" parent="CombatStateMachine/DeathState" unique_id=1299669092]
+wait_time = 3.0
 
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="AttackComponent/attack_again_timer" to="AttackComponent" method="_on_attack_again_timer_timeout"]
-[connection signal="timeout" from="StateMachine/DashState/dash_again_timer" to="StateMachine/DashState" method="_on_dash_again_timer_timeout"]
-[connection signal="timeout" from="StateMachine/DashState/dash_timer" to="StateMachine/DashState" method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="MovementStateMachine/DashState/dash_again_timer" to="MovementStateMachine/DashState" method="_on_dash_again_timer_timeout"]
+[connection signal="timeout" from="MovementStateMachine/DashState/dash_timer" to="MovementStateMachine/DashState" method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="CombatStateMachine/DeathState/automatic_revival_timer" to="CombatStateMachine/DeathState" method="_on_automatic_revival_timer_timeout"]

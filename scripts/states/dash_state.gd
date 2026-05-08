@@ -4,7 +4,7 @@ class_name DashState
 
 
 func enter():
-	print("Entering dash state")
+	#print("Entering dash state")
 	character.can_dash = false
 	
 	$dash_timer.start()
@@ -15,6 +15,10 @@ func enter():
 	
 	
 func physics_update(delta: float):
+	if character.movement_locked:
+		state_machine.change_state("idlestate")
+		return
+	
 	character.velocity.x =  (
 		character.facing_direction
 	 	* character.DASH_SPEED 

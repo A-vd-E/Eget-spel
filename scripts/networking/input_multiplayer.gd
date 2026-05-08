@@ -43,7 +43,8 @@ func _process(delta: float) -> void:
 @rpc("any_peer", "call_local")
 func jump():
 	if multiplayer.is_server():
-		player.do_jump = true
+		if not player.movement_locked:
+			player.do_jump = true
 		
 		# without a timer, the jump is "stored" if you jump mid-air.
 		# Now it only stores for a short time (right before hitting the ground)
@@ -51,18 +52,20 @@ func jump():
 		
 @rpc("any_peer", "call_local")
 func dash():
-	
 	if multiplayer.is_server():
-		player.do_dash = true
+		if not player.movement_locked:
+			player.do_dash = true
 @rpc("call_local", "any_peer")
 func melee_attack():
 	if multiplayer.is_server():
-		player.do_melee_attack = true	
+		if not player.movement_locked:
+			player.do_melee_attack = true	
 		
 @rpc("call_local", "any_peer")
 func ranged_attack():
 	if multiplayer.is_server():
-		player.do_ranged_attack = true		
+		if not player.movement_locked:
+			player.do_ranged_attack = true		
 # To avoid "storing" a jump if jump button pressed mid-air
 func _on_jump_buffer_timer_timeout() -> void:
 	if multiplayer.is_server():
