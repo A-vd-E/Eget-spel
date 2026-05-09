@@ -115,7 +115,6 @@ wait_time = 0.2
 wait_time = 0.5
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
-position_smoothing_enabled = true
 position_smoothing_speed = 9.0
 
 [node name="HealthComponent" type="Node2D" parent="." unique_id=1504426426]
