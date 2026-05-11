@@ -28,16 +28,14 @@ func physics_update(delta: float):
 		return
 	
 	
-	if character.do_dash and character.can_dash:
-		state_machine.change_state("dashstate")
-	
 	if character.moving_direction:
 		character.velocity.x = character.moving_direction * character.SPEED
 	
 func handle_input(action):
 	match action:
 		Actions.PlayerAction.DASH:
-			state_machine.change_state("dashstate")
+			if character.can_dash:
+				state_machine.change_state("dashstate")
 			
 		Actions.PlayerAction.JUMP:
 			if character.buffered_jump and character.is_on_floor() :

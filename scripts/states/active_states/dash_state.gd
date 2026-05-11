@@ -20,7 +20,6 @@ func enter():
 	# Dash cooldown
 	$dash_again_timer.start()
 	
-	character.do_dash = false
 	
 	
 func physics_update(delta: float):

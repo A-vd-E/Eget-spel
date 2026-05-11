@@ -62,7 +62,7 @@ func dash():
 func melee_attack():
 	if multiplayer.is_server():
 		if player.can_perform(Actions.PlayerAction.MELEE):
-			player.do_melee_attack = true	
+			player.do_melee_attack = true
 		
 @rpc("call_local", "any_peer")
 func ranged_attack():

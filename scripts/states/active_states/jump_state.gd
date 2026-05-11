@@ -50,4 +50,6 @@ func handle_input(action):
 	match action:
 		Actions.PlayerAction.DASH:
 			state_machine.change_state("dashstate")
+			
 		
+	
