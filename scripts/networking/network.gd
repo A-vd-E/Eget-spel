@@ -18,6 +18,7 @@ var _enemy_id_counter := -1
 
 #@onready var host_button = get_node("../CanvasLayer/VBoxContainer/HostButton")
 #@onready var join_button = get_node("../CanvasLayer/VBoxContainer/JoinButton")
+var is_dedicated_server: bool = false
 var ip_input
 
 
@@ -26,24 +27,41 @@ func _ready():
 	#multiplayer.peer_disconnected.connect(remove_player)
 	#multiplayer.server_disconnected.connect(_on_server_disconnected)
 	pass
+	
+# Helper to prevent trying to start the server again when reloading the scene
+func is_server_running() -> bool:
+	if multiplayer.multiplayer_peer == null:
+		return false
+	if multiplayer.multiplayer_peer is OfflineMultiplayerPeer:
+		return false
+	return multiplayer.multiplayer_peer.get_connection_status() != MultiplayerPeer.CONNECTION_DISCONNECTED
 
-func _become_host() -> void:
-	print("Starting host")
+func _become_host(dedicated: bool = false) -> void:
+	is_dedicated_server = dedicated
+	print("Starting host. Dedicated: ", dedicated)
+	
 	_player_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Players")
 	_enemy_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Enemies")
 	
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT)
+	# Only create server boundaries if it's not currently running (important for the scene reload trick)
+	if not is_server_running():
+		var peer = ENetMultiplayerPeer.new()
+		peer.create_server(PORT)
+		
+		multiplayer.multiplayer_peer = peer
+		
+		multiplayer.peer_connected.connect(_add_player)
+		multiplayer.peer_disconnected.connect(remove_player)
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
-	multiplayer.multiplayer_peer = peer
+	# Only spawn a player for the server machine if it's NOT a dedicated server
+	if not dedicated:
+		_add_player(multiplayer.get_unique_id())
 	
-	multiplayer.peer_connected.connect(_add_player)
-	multiplayer.peer_disconnected.connect(remove_player)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
-	
-	
-	_add_player(multiplayer.get_unique_id())
-	
+	_spawn_initial_state()
+
+func _spawn_initial_state() -> void:
+	_enemy_id_counter = -1
 	_spawn_enemy(Vector2(-400, 300)) # temporary positions and spawns
 	_spawn_enemy(Vector2(500, 100))
 	
@@ -102,9 +120,18 @@ func _add_player(id):
 
 func remove_player(id):
 	print("Player %s disconnected" % id)
-	var player = _player_spawn_node.get_node_or_null(str(id))
-	if player:
-		player.queue_free()
+	if _player_spawn_node:
+		var player = _player_spawn_node.get_node_or_null(str(id))
+		if player:
+			player.queue_free()
+	
+	# If this is a dedicated server and there are no clients left, reset the game state
+	if is_dedicated_server and multiplayer.get_peers().is_empty():
+		call_deferred("reset_game_state")
+
+func reset_game_state():
+	print("No players remaining. Resetting game state...")
+	get_tree().reload_current_scene()
 		
 func _on_server_disconnected():
 	get_tree().reload_current_scene()
