@@ -25,4 +25,4 @@ func _on_join_button_pressed() -> void:
 
 func toggle_ui(show: bool):
 
-	$CanvasLayer/VBoxContainer.visible = show
+	$ConnectionUI/VBoxContainer.visible = show

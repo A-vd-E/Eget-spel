@@ -9,7 +9,8 @@ const DASH_SPEED := 900.0
 @onready var input_synchronizer = $InputSynchronizer
 @onready var animation_player = $AnimationPlayer
 @onready var visuals = $Visuals
-@onready var state_machine = $MovementStateMachine
+@onready var actions_state_machine = $ActionsStateMachine
+@onready var status_state_machine = $StatusStateMachine
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
 @export var respawn_point: Vector2 = Vector2(0, 0)
@@ -31,7 +32,7 @@ var moving_direction: int
 			return
 		facing_direction = value
 		
-var do_jump := false # Tells player to jump, updated in InputSynchronizer
+var buffered_jump := false
 var do_dash := false # Tells player to dash, updated in InputSynchronizer
 var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
@@ -68,10 +69,13 @@ func _physics_process(delta: float) -> void:
 		
 		if moving_direction != 0 and knockback_stun_time_left <= 0.0:
 			facing_direction = moving_direction
+			
+		#try_jump()
 		
-		state_machine.physics_update(delta)
-		move_and_slide()
+		actions_state_machine.physics_update(delta)
+		
 		_apply_movement_from_input(delta)
+		move_and_slide()
 		sync_position = global_position
 		sync_velocity = velocity
 		
@@ -118,17 +122,12 @@ func _apply_movement_from_input(delta):
 	
 	
 	
-	## Handles dashing
-	#if do_dash and can_dash:
-		#dash()
-		#do_dash = false
-	#
 func _on_knockback_received(knockback: Vector2) -> void:
 	if multiplayer.is_server():
 		velocity = knockback
 		knockback_stun_time_left = 0.3 # 300 milliseconds of stun
 		# Cancel active states
-		do_jump = false
+		
 		do_dash = false
 		dashing = false
 		
@@ -136,25 +135,34 @@ func _on_knockback_received(knockback: Vector2) -> void:
 func rpc_play_animation(anim_name: String):
 	animation_player.play(anim_name)
 
-#func dash():
-	#dashing = true
-	#can_dash = false
-	## Dash duration
-	#$dash_timer.start()
-	## Dash cooldown
-	#$dash_again_timer.start()
-	#velocity.x =  facing_direction * DASH_SPEED 
-	#
-	#velocity.y = 0
-
 
 func apply_gravity(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-#func _on_dash_timer_timeout() -> void:
-	#dashing = false
+func handle_action(action: Actions.PlayerAction):
+	if not can_perform(action):
+		return
+	actions_state_machine.current_state.handle_input(action)
+func can_perform(action: Actions.PlayerAction) -> bool:
+	#var action_allowed = actions_state_machine.current_state.can(action)
+	#var status_allowed = status_state_machine.current_state.can(action)
 #
+	#print("Action:", action_allowed)
+	#print("Status:", status_allowed)
 #
-#func _on_dash_again_timer_timeout() -> void:
-	#can_dash = true
+	#return action_allowed and status_allowed
+	
+	#print("Works here 1")
+	return (
+		actions_state_machine.current_state.can(action)
+		and
+		status_state_machine.current_state.can(action)
+	)
+# Since jumps are buffered to improve game feel, they are 
+# 
+func try_jump():
+	if buffered_jump and is_on_floor() :
+
+			buffered_jump = false
+			actions_state_machine.change_state("jumpstate")

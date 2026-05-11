@@ -1,12 +1,21 @@
 extends State
 class_name JumpState
 
+func  _ready():
+	allowed_actions = {
+		Actions.PlayerAction.MOVE: true,
+		Actions.PlayerAction.JUMP: false,
+		Actions.PlayerAction.DASH: true,
+		Actions.PlayerAction.MELEE: true,
+		Actions.PlayerAction.RANGED: true
+	}
+
 func enter():
 	#print("Entering jump state")
 	
-	if character.do_jump and character.is_on_floor() and not character.dashing:
+	if character.is_on_floor():
 		character.velocity.y = character.JUMP_VELOCITY
-		character.do_jump = false
+		
 	
 func physics_update(delta: float):
 	
@@ -26,8 +35,6 @@ func physics_update(delta: float):
 			character.velocity.x,
 			0, 
 			character.SPEED)
-	if character.do_dash and character.can_dash:
-		state_machine.change_state("dashstate")
 	
 	if character.is_on_floor():
 		if character.moving_direction != 0:
@@ -38,3 +45,9 @@ func physics_update(delta: float):
 
 			state_machine.change_state(	"idlestate")
 			return
+
+func handle_input(action):
+	match action:
+		Actions.PlayerAction.DASH:
+			state_machine.change_state("dashstate")
+		

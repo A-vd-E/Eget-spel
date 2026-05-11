@@ -1,7 +1,15 @@
 extends State
 
 class_name AliveState
-	
+
+func  _ready():
+	allowed_actions = {
+		Actions.PlayerAction.MOVE: true,
+		Actions.PlayerAction.JUMP: true,
+		Actions.PlayerAction.DASH: true,
+		Actions.PlayerAction.MELEE: true,
+		Actions.PlayerAction.RANGED: true
+	}
 # For initialization 
 func enter():
 	print("Entering alive state")
