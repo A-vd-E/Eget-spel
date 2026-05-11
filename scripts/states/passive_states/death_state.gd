@@ -26,10 +26,7 @@ func exit():
 	character.remove_turn_lock("death")
 	
 	character.movement_locked = false
-	
-func physics_update(delta: float):
-	print(character.lock_turning)
-	#character.lock_turning = true
+
 
 func _on_automatic_revival_timer_timeout() -> void:
 	$automatic_revival_timer.stop()
