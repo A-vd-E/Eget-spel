@@ -14,6 +14,7 @@ func  _ready():
 func enter():
 	print("Entering alive state")
 	character.movement_locked = false
+	
 	var health = character.get_node("HealthComponent")
 	if not health.died.is_connected(death):
 		health.died.connect(death)

@@ -206,9 +206,6 @@ metadata/_custom_type_script = "uid://bij3pej27y3os"
 [node name="dash_again_timer" type="Timer" parent="ActionsStateMachine/DashState" unique_id=842854450]
 wait_time = 0.5
 
-[node name="dash_timer" type="Timer" parent="ActionsStateMachine/DashState" unique_id=675862883]
-wait_time = 0.2
-
 [node name="HurtState" type="Node" parent="ActionsStateMachine" unique_id=1254682499]
 script = ExtResource("14_a8ls1")
 metadata/_custom_type_script = "uid://bmngkirunbide"
@@ -232,8 +229,7 @@ wait_time = 3.0
 
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="AttackComponent/attack_again_timer" to="AttackComponent" method="_on_attack_again_timer_timeout"]
-[connection signal="timeout" from="AttackComponent/lock_turning_timer" to="AttackComponent" method="_on_attack_lock_turning_timer_timeout"]
+[connection signal="timeout" from="AttackComponent/lock_turning_timer" to="AttackComponent" method="_on_lock_turning_timer_timeout"]
 [connection signal="timeout" from="ActionsStateMachine/DashState/dash_again_timer" to="ActionsStateMachine/DashState" method="_on_dash_again_timer_timeout"]
-[connection signal="timeout" from="ActionsStateMachine/DashState/dash_timer" to="ActionsStateMachine/DashState" method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="ActionsStateMachine/HurtState/stun_duration_timer" to="ActionsStateMachine/HurtState" method="_on_stun_duration_timer_timeout"]
 [connection signal="timeout" from="StatusStateMachine/DeathState/automatic_revival_timer" to="StatusStateMachine/DeathState" method="_on_automatic_revival_timer_timeout"]

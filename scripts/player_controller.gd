@@ -24,7 +24,7 @@ const DASH_SPEED := 900.0
 var moving_direction: int
 @export var facing_direction := 1: # Latest facing moving_direction
 	set(value):
-		if lock_turning:
+		if is_turn_locked():
 			return
 		if value == 0:
 			return
@@ -32,7 +32,7 @@ var moving_direction: int
 			return
 		facing_direction = value
 		
-var lock_turning := false # to prevent player from turning (for example mid attack), still allows switching walking direction
+var lock_turning := {} # to prevent player from turning (for example mid attack), still allows switching walking direction
 var buffered_jump := false
 var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
@@ -67,14 +67,14 @@ func _physics_process(delta: float) -> void:
 	if multiplayer.is_server(): 
 		moving_direction = input_synchronizer.input_direction
 		
-		if moving_direction != 0 and not lock_turning:
+		if moving_direction != 0:
 			
 			facing_direction = moving_direction
 			
 		
 		actions_state_machine.physics_update(delta)
 		status_state_machine.physics_update(delta)
-		#_apply_movement_from_input(delta)
+
 		move_and_slide()
 		sync_position = global_position
 		sync_velocity = velocity
@@ -109,27 +109,12 @@ func _apply_network_movement(_delta):
 	
 	move_and_slide()
 
-## Manages basic movement, namely jumping and walking.
-#func _apply_movement_from_input(delta):
-	#if knockback_stun_time_left > 0.0:
-		#knockback_stun_time_left -= delta
-		#if not is_on_floor():
-			#velocity += get_gravity() * delta
-		## Apply friction to slow down horizontal slide
-		#velocity.x = move_toward(velocity.x, 0, 1000 * delta) 
-		#move_and_slide()
-		#return # Exit early so player input is ignored during stun!
-	#
-	#
-	
+
 func _on_knockback_received(knockback: Vector2) -> void:
 	if multiplayer.is_server():
 		actions_state_machine.change_state("hurtstate")
 		velocity = knockback
-		#knockback_stun_time_left = 0.3 # 300 milliseconds of stun
-		## Cancel active states
-		#
-		#dashing = false
+		
 		
 @rpc("call_local", "authority", "reliable")
 func rpc_play_animation(anim_name: String):
@@ -152,3 +137,12 @@ func can_perform(action: Actions.PlayerAction) -> bool:
 		and
 		status_state_machine.current_state.can(action)
 	)
+
+func add_turn_lock(reason: String):
+	lock_turning[reason] = true
+
+func remove_turn_lock(reason: String):
+	lock_turning.erase(reason)
+
+func is_turn_locked() -> bool:
+	return not lock_turning.is_empty()

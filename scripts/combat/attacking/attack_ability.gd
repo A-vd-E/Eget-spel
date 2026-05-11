@@ -19,7 +19,7 @@ var owner_node
 
 func melee_attack():
 	if can_attack: 
-		player.lock_turning = true
+		player.add_turn_lock("attack")
 		
 		var hitbox = MeleeHitboxScene.instantiate()
 		hitbox_spawnpoint.add_child(hitbox, true)
@@ -61,7 +61,11 @@ func ranged_attack():
 		$attack_again_timer.start()
 func _on_attack_again_timer_timeout() -> void:
 	can_attack = true
+	$attack_again_timer.stop()
 
 
 func _on_lock_turning_timer_timeout() -> void:
-	player.lock_turning = false
+	player.remove_turn_lock("attack")
+	
+	$lock_turning_timer.stop()
+	

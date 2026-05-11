@@ -17,15 +17,19 @@ func enter():
 	print("Entering death state")
 	
 	character.movement_locked = true
-	character.lock_turning = true
+	character.add_turn_lock("death")
 	print(character.lock_turning)
 	$automatic_revival_timer.start()
-	print("SERVER:", multiplayer.is_server(), " LOCK:", character.lock_turning)
-	
+
 func exit(): 
-	pass
+	print("exiting death")
+	character.remove_turn_lock("death")
+	
+	character.movement_locked = false
+	
 func physics_update(delta: float):
 	print(character.lock_turning)
+	#character.lock_turning = true
 
 func _on_automatic_revival_timer_timeout() -> void:
 	$automatic_revival_timer.stop()
