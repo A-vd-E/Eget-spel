@@ -34,8 +34,7 @@ func physics_update(delta: float):
 func handle_input(action):
 	match action:
 		Actions.PlayerAction.DASH:
-			if character.can_dash:
-				state_machine.change_state("dashstate")
+			state_machine.change_state("dashstate")
 			
 		Actions.PlayerAction.JUMP:
 			if character.buffered_jump and character.is_on_floor() :

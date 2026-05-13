@@ -54,11 +54,11 @@ func physics_update(delta: float):
 	# Landing transition
 	if character.is_on_floor():
 		if character.moving_direction != 0:
-			
+			character.can_dash_in_air = true
 			state_machine.change_state(	"walkstate")
 			return
 		elif character.moving_direction == 0:
-			
+			character.can_dash_in_air = true
 			state_machine.change_state(	"idlestate")
 			return
 

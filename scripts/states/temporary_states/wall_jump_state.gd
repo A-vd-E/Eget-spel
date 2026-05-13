@@ -17,6 +17,7 @@ func  _ready():
 func enter():
 	
 	print("enter wall jump")
+	character.can_dash_in_air = true
 	wall_jump_locked = true
 				
 	var wall_normal = character.get_wall_normal()

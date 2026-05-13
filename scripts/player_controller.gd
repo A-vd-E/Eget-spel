@@ -42,7 +42,8 @@ var buffered_jump := false
 var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
-var can_dash := true # Determines if you can dash, tied to timer
+var dash_on_cooldown := false
+var can_dash_in_air := true # Determines if you can dash, tied to timer
 var movement_locked := false
 var knockback_stun_time_left := 0.0
 
