@@ -45,7 +45,6 @@ func physics_update(delta: float):
 	# Wall jump 
 	if wants_wall_jump: 
 		if character.is_on_wall():	
-				print("walljump test, in falling")
 				wants_wall_jump = false
 				state_machine.change_state("walljumpstate")
 				return
@@ -69,7 +68,6 @@ func handle_input(action):
 			
 		Actions.PlayerAction.JUMP:
 			# WALL JUMP
-			
 			wants_wall_jump = true
 			$wall_jump_buffer_timer.start()
 				

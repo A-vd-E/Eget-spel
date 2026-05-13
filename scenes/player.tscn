@@ -253,5 +253,5 @@ wait_time = 3.0
 [connection signal="timeout" from="ActionsStateMachine/DashState/dash_again_timer" to="ActionsStateMachine/DashState" method="_on_dash_again_timer_timeout"]
 [connection signal="timeout" from="ActionsStateMachine/HurtState/stun_duration_timer" to="ActionsStateMachine/HurtState" method="_on_stun_duration_timer_timeout"]
 [connection signal="timeout" from="ActionsStateMachine/WallJumpState/wall_jump_timer" to="ActionsStateMachine/WallJumpState" method="_on_wall_jump_timer_timeout"]
-[connection signal="timeout" from="ActionsStateMachine/FallState/wall_jump_buffer_timer" to="ActionsStateMachine/FallState" method="_on_wall_jump_buffer_timer_2_timeout"]
+[connection signal="timeout" from="ActionsStateMachine/FallState/wall_jump_buffer_timer" to="ActionsStateMachine/FallState" method="_on_wall_jump_buffer_timer_timeout"]
 [connection signal="timeout" from="StatusStateMachine/DeathState/automatic_revival_timer" to="StatusStateMachine/DeathState" method="_on_automatic_revival_timer_timeout"]
