@@ -9,8 +9,11 @@ const DASH_SPEED := 900.0
 @onready var input_synchronizer = $InputSynchronizer
 @onready var animation_player = $AnimationPlayer
 @onready var visuals = $Visuals
+@onready var actions_state_machine = $ActionsStateMachine
+@onready var status_state_machine = $StatusStateMachine
 @export var sync_position: Vector2
 @export var sync_velocity: Vector2
+@export var respawn_point: Vector2 = Vector2(0, 0)
 @export var correction_strength := 10.0 # Higher means more aggresive correction
 @export var player_id := 1:  # Will match Multiplayer.unique_id
 	set(id):
@@ -21,19 +24,21 @@ const DASH_SPEED := 900.0
 var moving_direction: int
 @export var facing_direction := 1: # Latest facing moving_direction
 	set(value):
+		if is_turn_locked():
+			return
 		if value == 0:
 			return
 		if facing_direction == value:
 			return
 		facing_direction = value
 		
-var do_jump := false # Tells player to jump, updated in InputSynchronizer
-var do_dash := false # Tells player to dash, updated in InputSynchronizer
+var lock_turning := {} # to prevent player from turning (for example mid attack), still allows switching walking direction
+var buffered_jump := false
 var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
 var can_dash := true # Determines if you can dash, tied to timer
-
+var movement_locked := false
 var knockback_stun_time_left := 0.0
 
 
@@ -62,10 +67,15 @@ func _physics_process(delta: float) -> void:
 	if multiplayer.is_server(): 
 		moving_direction = input_synchronizer.input_direction
 		
-		if moving_direction != 0 and knockback_stun_time_left <= 0.0:
+		if moving_direction != 0:
+			
 			facing_direction = moving_direction
+			
 		
-		_apply_movement_from_input(delta)
+		actions_state_machine.physics_update(delta)
+		status_state_machine.physics_update(delta)
+
+		move_and_slide()
 		sync_position = global_position
 		sync_velocity = velocity
 		
@@ -77,6 +87,7 @@ func _physics_process(delta: float) -> void:
 		if do_ranged_attack:
 			attack_component.ranged_attack()
 			do_ranged_attack = false
+			
 	else:
 		_apply_network_movement(delta)
 		
@@ -98,68 +109,40 @@ func _apply_network_movement(_delta):
 	
 	move_and_slide()
 
-## Manages basic movement, namely jumping and walking.
-func _apply_movement_from_input(delta):
-	if knockback_stun_time_left > 0.0:
-		knockback_stun_time_left -= delta
-		if not is_on_floor():
-			velocity += get_gravity() * delta
-		# Apply friction to slow down horizontal slide
-		velocity.x = move_toward(velocity.x, 0, 1000 * delta) 
-		move_and_slide()
-		return # Exit early so player input is ignored during stun!
-	
-	# Handles gravity
-	if not is_on_floor() and not dashing:
-		velocity += get_gravity() * delta
-	
-	# Handles jump.
-	if do_jump and is_on_floor() and not dashing:
-		velocity.y = JUMP_VELOCITY
-		do_jump = false
-	
-	# Handles dashing
-	if do_dash and can_dash:
-		dash()
-		do_dash = false
-	
-	if not dashing:
-		if moving_direction:
-			velocity.x = moving_direction * SPEED
-		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-	
-	move_and_slide()
-	
+
 func _on_knockback_received(knockback: Vector2) -> void:
 	if multiplayer.is_server():
+		actions_state_machine.change_state("hurtstate")
 		velocity = knockback
-		knockback_stun_time_left = 0.3 # 300 milliseconds of stun
-		# Cancel active states
-		do_jump = false
-		do_dash = false
-		dashing = false
+		
 		
 @rpc("call_local", "authority", "reliable")
 func rpc_play_animation(anim_name: String):
 	animation_player.play(anim_name)
 
-func dash():
-	dashing = true
-	can_dash = false
-	# Dash duration
-	$dash_timer.start()
-	# Dash cooldown
-	$dash_again_timer.start()
-	velocity.x =  facing_direction * DASH_SPEED 
-	
-	velocity.y = 0
 
 
+# Helper functions for other classes to use
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+func handle_action(action: Actions.PlayerAction):
+	if not can_perform(action):
+		return
+	actions_state_machine.current_state.handle_input(action)
+func can_perform(action: Actions.PlayerAction) -> bool:
+	 
+	return (
+		actions_state_machine.current_state.can(action)
+		and
+		status_state_machine.current_state.can(action)
+	)
 
-func _on_dash_timer_timeout() -> void:
-	dashing = false
+func add_turn_lock(reason: String):
+	lock_turning[reason] = true
 
+func remove_turn_lock(reason: String):
+	lock_turning.erase(reason)
 
-func _on_dash_again_timer_timeout() -> void:
-	can_dash = true
+func is_turn_locked() -> bool:
+	return not lock_turning.is_empty()

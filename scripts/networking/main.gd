@@ -17,11 +17,12 @@ func _on_host_button_pressed() -> void:
 
 func _on_join_button_pressed() -> void:
 	print("Join button pressed")
-	var ip_input = get_node("CanvasLayer/VBoxContainer/LineEdit")
+	var ip_input = get_node("ConnectionUI/VBoxContainer/LineEdit")
 	
 	toggle_ui(false)
 	Network._join_as_non_host_client(ip_input.text)
 	
 
 func toggle_ui(show: bool):
-	$CanvasLayer/VBoxContainer.visible = show
+
+	$ConnectionUI/VBoxContainer.visible = show

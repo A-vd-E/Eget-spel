@@ -8,29 +8,37 @@
 [ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/combat/hurtbox.gd" id="4_tuyoq"]
 [ext_resource type="Script" uid="uid://csf0ypjefua5c" path="res://scripts/combat/attacking/attack_ability.gd" id="7_fjrip"]
 [ext_resource type="Texture2D" uid="uid://c566agru67r15" path="res://assets/images/Screenshot from 2026-04-28 13-41-57.png" id="8_smehm"]
+[ext_resource type="Script" uid="uid://bmoimaulsf86r" path="res://scripts/states/state_machine.gd" id="8_ur7pv"]
+[ext_resource type="Script" uid="uid://cgsfsyyqyr1xh" path="res://scripts/states/active_states/idle_state.gd" id="9_y4r1p"]
+[ext_resource type="Script" uid="uid://bmtsnkf7xk3ws" path="res://scripts/states/active_states/jump_state.gd" id="10_d2wvv"]
+[ext_resource type="Script" uid="uid://c0arskwrttllr" path="res://scripts/states/active_states/walk_state.gd" id="11_3v2ag"]
+[ext_resource type="Script" uid="uid://bij3pej27y3os" path="res://scripts/states/active_states/dash_state.gd" id="12_3v2ag"]
+[ext_resource type="Script" uid="uid://bmngkirunbide" path="res://scripts/states/active_states/hurt_state.gd" id="14_a8ls1"]
+[ext_resource type="Script" uid="uid://bvr046aph7mv7" path="res://scripts/states/passive_states/alive_state.gd" id="14_oprun"]
+[ext_resource type="Script" uid="uid://bcp4ynm217us8" path="res://scripts/states/passive_states/death_state.gd" id="15_a8ls1"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:player_id")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:do_jump")
+properties/1/path = NodePath(".:sync_position")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:do_dash")
+properties/2/path = NodePath(".:sync_velocity")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:sync_position")
+properties/3/path = NodePath("HealthComponent:sync_health")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:sync_velocity")
+properties/4/path = NodePath(".:facing_direction")
 properties/4/spawn = true
-properties/4/replication_mode = 1
-properties/5/path = NodePath("HealthComponent:sync_health")
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:buffered_jump")
 properties/5/spawn = true
 properties/5/replication_mode = 1
-properties/6/path = NodePath(".:facing_direction")
+properties/6/path = NodePath(".:lock_turning")
 properties/6/spawn = true
-properties/6/replication_mode = 2
+properties/6/replication_mode = 1
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g2els"]
 properties/0/path = NodePath("InputSynchronizer:input_direction")
@@ -108,11 +116,8 @@ wait_time = 0.1
 position = Vector2(-42.857143, 28.57143)
 shape = SubResource("RectangleShape2D_g2els")
 
-[node name="dash_timer" type="Timer" parent="." unique_id=675862883]
-wait_time = 0.2
-
-[node name="dash_again_timer" type="Timer" parent="." unique_id=842854450]
-wait_time = 0.5
+[node name="Node2D" type="Node2D" parent="." unique_id=1405311707]
+position = Vector2(0, -2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=452903423]
 position_smoothing_speed = 9.0
@@ -144,6 +149,9 @@ script = ExtResource("7_fjrip")
 [node name="attack_again_timer" type="Timer" parent="AttackComponent" unique_id=741379165]
 wait_time = 0.6
 
+[node name="lock_turning_timer" type="Timer" parent="AttackComponent" unique_id=1452429895]
+wait_time = 0.2
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=359446974]
 libraries/ = SubResource("AnimationLibrary_d2wvv")
 
@@ -174,7 +182,54 @@ color = Color(0.61339027, 0.61339027, 0.61339027, 1)
 position = Vector2(-85.71429, 0)
 texture = ExtResource("1_3vyb7")
 
+[node name="ActionsStateMachine" type="Node" parent="." unique_id=1548200579 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("8_ur7pv")
+initial_state = NodePath("IdleState")
+metadata/_custom_type_script = "uid://bmoimaulsf86r"
+
+[node name="IdleState" type="Node" parent="ActionsStateMachine" unique_id=1389880217]
+script = ExtResource("9_y4r1p")
+metadata/_custom_type_script = "uid://cgsfsyyqyr1xh"
+
+[node name="JumpState" type="Node" parent="ActionsStateMachine" unique_id=47813447]
+script = ExtResource("10_d2wvv")
+metadata/_custom_type_script = "uid://bmtsnkf7xk3ws"
+
+[node name="WalkState" type="Node" parent="ActionsStateMachine" unique_id=205268049]
+script = ExtResource("11_3v2ag")
+metadata/_custom_type_script = "uid://c0arskwrttllr"
+
+[node name="DashState" type="Node" parent="ActionsStateMachine" unique_id=704110877]
+script = ExtResource("12_3v2ag")
+metadata/_custom_type_script = "uid://bij3pej27y3os"
+
+[node name="dash_again_timer" type="Timer" parent="ActionsStateMachine/DashState" unique_id=842854450]
+wait_time = 0.5
+
+[node name="HurtState" type="Node" parent="ActionsStateMachine" unique_id=1254682499]
+script = ExtResource("14_a8ls1")
+metadata/_custom_type_script = "uid://bmngkirunbide"
+
+[node name="stun_duration_timer" type="Timer" parent="ActionsStateMachine/HurtState" unique_id=1138116383]
+wait_time = 0.3
+
+[node name="StatusStateMachine" type="Node" parent="." unique_id=828353105 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("8_ur7pv")
+initial_state = NodePath("AliveState")
+metadata/_custom_type_script = "uid://bmoimaulsf86r"
+
+[node name="AliveState" type="Node" parent="StatusStateMachine" unique_id=839608632]
+script = ExtResource("14_oprun")
+
+[node name="DeathState" type="Node" parent="StatusStateMachine" unique_id=42384345]
+script = ExtResource("15_a8ls1")
+
+[node name="automatic_revival_timer" type="Timer" parent="StatusStateMachine/DeathState" unique_id=1299669092]
+wait_time = 3.0
+
 [connection signal="timeout" from="InputSynchronizer/jump_buffer_timer" to="InputSynchronizer" method="_on_jump_buffer_timer_timeout"]
-[connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]
-[connection signal="timeout" from="dash_again_timer" to="." method="_on_dash_again_timer_timeout"]
 [connection signal="timeout" from="AttackComponent/attack_again_timer" to="AttackComponent" method="_on_attack_again_timer_timeout"]
+[connection signal="timeout" from="AttackComponent/lock_turning_timer" to="AttackComponent" method="_on_lock_turning_timer_timeout"]
+[connection signal="timeout" from="ActionsStateMachine/DashState/dash_again_timer" to="ActionsStateMachine/DashState" method="_on_dash_again_timer_timeout"]
+[connection signal="timeout" from="ActionsStateMachine/HurtState/stun_duration_timer" to="ActionsStateMachine/HurtState" method="_on_stun_duration_timer_timeout"]
+[connection signal="timeout" from="StatusStateMachine/DeathState/automatic_revival_timer" to="StatusStateMachine/DeathState" method="_on_automatic_revival_timer_timeout"]

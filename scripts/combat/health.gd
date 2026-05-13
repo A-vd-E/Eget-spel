@@ -41,6 +41,16 @@ func take_damage(damage: int, base_knockback: Vector2 = Vector2.ZERO, source_pos
 
 func dies():
 	died.emit()
+	
+	
+func respawn():
+	if not multiplayer.is_server():
+		return
+	var character = get_parent()
+	character.global_position = character.respawn_point
+	character.velocity = Vector2.ZERO
+	character.sync_position = character.respawn_point
+	
 # Sets the owner id for this node, input taken in "Player" = player_id
 # Assigns the same id to owner id of "Hurtbox"
 func set_owner_id(id):
