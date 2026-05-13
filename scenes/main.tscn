@@ -28,12 +28,12 @@ layout_mode = 2
 placeholder_text = "Enter IP"
 alignment = 1
 
-[node name="PingLabel" type="Label" parent="CanvasLayer" unique_id=1545633055]
+[node name="CanvasLayer#PingLabel" type="Label" parent="ConnectionUI" unique_id=1545633055]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -173.0
-offset_bottom = 23.0
+offset_bottom = 49.0
 grow_horizontal = 0
 text = "Ping: XX"
 horizontal_alignment = 1
