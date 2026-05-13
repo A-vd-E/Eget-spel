@@ -55,7 +55,11 @@ func jump():
 func dash():
 	if multiplayer.is_server():
 
-		if player.can_perform(Actions.PlayerAction.DASH) and player.can_dash:
+		if player.can_perform(Actions.PlayerAction.DASH):
+			if player.dash_on_cooldown:
+				return
+			if not player.is_on_floor() and !player.can_dash_in_air:
+				return
 			player.handle_action(Actions.PlayerAction.DASH)
 			#player.do_dash = true
 @rpc("call_local", "any_peer")

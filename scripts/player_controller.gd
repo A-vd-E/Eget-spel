@@ -3,6 +3,11 @@ extends CharacterBody2D
 const SPEED := 300.0
 const JUMP_VELOCITY := -700.0
 const DASH_SPEED := 900.0
+const WALL_JUMP_FORCE_X = 200.0
+const WALL_JUMP_FORCE_Y = -700.0
+const WALL_SLIDE_SPEED = 200.0
+
+var wall_jump_locked := false
 
 
 @onready var attack_component: Node = $AttackComponent
@@ -37,7 +42,8 @@ var buffered_jump := false
 var do_melee_attack := false # Tells player to attack, updated in InputSynchronizer
 var do_ranged_attack := false # Tells player to attack, updated in InputSynchronizer
 var dashing := false # To check if currently dashing
-var can_dash := true # Determines if you can dash, tied to timer
+var dash_on_cooldown := false
+var can_dash_in_air := true # Determines if you can dash, tied to timer
 var movement_locked := false
 var knockback_stun_time_left := 0.0
 
