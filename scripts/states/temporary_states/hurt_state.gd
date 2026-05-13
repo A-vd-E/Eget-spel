@@ -15,7 +15,7 @@ func  _ready():
 
 
 func enter():
-
+	print("enter hurt")
 	$stun_duration_timer.start()
 	# Stop conflicting movement states
 	character.dashing = false
@@ -41,4 +41,7 @@ func _on_stun_duration_timer_timeout() -> void:
 	$stun_duration_timer.stop()
 	character.remove_turn_lock("hurt")
 	
-	state_machine.change_state("idlestate") 
+	if character.is_on_floor():
+		state_machine.change_state("fallstate")
+	else:
+		state_machine.change_state("idlestate") 

@@ -3,6 +3,11 @@ extends CharacterBody2D
 const SPEED := 300.0
 const JUMP_VELOCITY := -700.0
 const DASH_SPEED := 900.0
+const WALL_JUMP_FORCE_X = 200.0
+const WALL_JUMP_FORCE_Y = -700.0
+const WALL_SLIDE_SPEED = 200.0
+
+var wall_jump_locked := false
 
 
 @onready var attack_component: Node = $AttackComponent

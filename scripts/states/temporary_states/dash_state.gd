@@ -15,13 +15,13 @@ func _ready():
 		Actions.PlayerAction.MOVE: false,
 		Actions.PlayerAction.JUMP: false,
 		Actions.PlayerAction.DASH: false,
-		Actions.PlayerAction.MELEE: false,
+		Actions.PlayerAction.MELEE: true,
 		Actions.PlayerAction.RANGED: false
 	}
 
 
 func enter():
-
+	print("enter dash")
 	elapsed = 0.0
 	start_position = character.global_position
 
@@ -63,8 +63,12 @@ func end_dash():
 	character.velocity.x = 0
 
 	character.remove_turn_lock("dash")
-
-	state_machine.change_state("idlestate")
+	
+	if not character.is_on_floor():
+		state_machine.change_state("fallstate")
+		return
+	else:
+		state_machine.change_state("idlestate")
 
 
 func _on_dash_again_timer_timeout():

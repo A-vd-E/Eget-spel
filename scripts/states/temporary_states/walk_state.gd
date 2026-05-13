@@ -1,7 +1,5 @@
 extends State
-
-class_name IdleState
-
+class_name WalkState
 
 func  _ready():
 	allowed_actions = {
@@ -11,37 +9,34 @@ func  _ready():
 		Actions.PlayerAction.MELEE: true,
 		Actions.PlayerAction.RANGED: true
 	}
-# For initialization 
+
 func enter():
-	#print("Entering idle state")
-	pass
+	print("Entering walk state")
 	
-
-
+# For movement
 func physics_update(delta: float):
 	
-	
-	
-	character.apply_gravity(delta)
-	if character.moving_direction == 0:
-		character.velocity.x = move_toward(
-			character.velocity.x,
-			0, 
-			character.SPEED)
-	
-
-		
-	if character.moving_direction != 0:
-		state_machine.change_state("walkstate")
+	if character.movement_locked:
+		state_machine.change_state("idlestate")
 		return
-
-
-
+	
+	if not character.is_on_floor():
+		state_machine.change_state("fallstate")
+	
+	if character.moving_direction == 0:
+		state_machine.change_state("idlestate")
+		return
+	
+	
+	if character.moving_direction:
+		character.velocity.x = character.moving_direction * character.SPEED
+	
 func handle_input(action):
 	match action:
 		Actions.PlayerAction.DASH:
-			state_machine.change_state("dashstate")
-		
+			if character.can_dash:
+				state_machine.change_state("dashstate")
+			
 		Actions.PlayerAction.JUMP:
 			if character.buffered_jump and character.is_on_floor() :
 
