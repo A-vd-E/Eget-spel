@@ -1,7 +1,7 @@
 class_name ProjectileHitbox
 extends Hitbox
 
-@export var speed: int = 600
+@export var speed: int = 800
 var velocity: int
 
 

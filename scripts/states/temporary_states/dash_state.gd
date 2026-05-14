@@ -61,14 +61,15 @@ func physics_update(delta: float):
 	# Optional wall cancel
 	if character.is_on_wall() and not character.is_on_floor():
 		end_dash()
-
+func exit():
+	character.remove_turn_lock("dash")
 
 func end_dash():
 
 	character.velocity.x = 0
 
 	character.remove_turn_lock("dash")
-	
+	print("coll test")
 	if not character.is_on_floor():
 		state_machine.change_state("fallstate")
 		return
