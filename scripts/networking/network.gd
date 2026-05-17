@@ -62,8 +62,19 @@ func _become_host(dedicated: bool = false) -> void:
 
 func _spawn_initial_state() -> void:
 	_enemy_id_counter = -1
-	_spawn_enemy(Vector2(-400, 300)) # temporary positions and spawns
-	_spawn_enemy(Vector2(500, 100))
+	
+	var spawn_positions = get_tree().current_scene.get_node_or_null("World/World2/EnemySpawnPositions")
+	
+	if spawn_positions:
+		# Iterate over all position markers and spawn an enemy at their global_position
+		for pos_node in spawn_positions.get_children():
+			_spawn_enemy(pos_node.global_position)
+	else:
+		for i in range(10):
+			print("Warning: Could not find 'World/World2/EnemySpawnPositions'. Using fallback positions.")
+		# Fallback just in case the node is missing
+		_spawn_enemy(Vector2(-400, 300))
+		_spawn_enemy(Vector2(500, 100))
 	
 func _join_as_non_host_client(ip_input) -> void:
 	print("Joining as client")
