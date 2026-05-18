@@ -4,9 +4,20 @@ This is a project for the course DD1349. It is a multiplayer platformer game mad
 
 The project has evolved from a basic single-player prototype into a client-server multiplayer game where players can join a host, move around the map, and fight enemies.
 
+## Player Controls
+The player can move around, jump, dash and attack both with melee and ranged attacks. This is done via keyboard input, and most commands are bound to two keys.
+The player can therefore choose which key combination they wish to use. Key binds are as follows:
+
+Movement - 'A' & 'D' and 'Right arrow' & 'Left arrow'
+Jump - 'Space bar' and 'W' and 'Up arrow' 
+Dash - 'Shift' or 'C'
+Melee atttack - J and X
+Ranged attack - K and F
+
+
 ## 🎮 How to Play & Test
 
-**Download:** Get the latest `.zip` from the **[Releases](../../releases)** tab, extract, and run the executable (or clone the repo and run `project.godot` in Godot 4).
+**Download:** Get the latest build `.zip` mathcing your OS from the **[Releases](../../releases)** tab (currently supports Linux and Windows), extract, and run the executable. Alternatively you can download the source code or clone the repo and then run the `project.godot` file in Godot 4.
 
 **Play Locally (Same Computer):**
 1. Open two game instances.
@@ -56,4 +67,4 @@ Instead of relying on external libraries, this project utilizes Godot 4's built-
 
 ## Development Tools
 
-To help with the development process, AI tools such as GitHub Copilot and ChatGPT are used to assist with problem-solving, logic structuring, and code generation.
+To help with the development process, AI tools such as GitHub Copilot and ChatGPT are used to assist with problem-solving, logic structuring, code generation and documentation.
