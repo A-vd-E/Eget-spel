@@ -15,7 +15,7 @@ func  _ready():
 	}
 	
 func enter():
-	print("enter fall")
+
 	wants_wall_jump = false
 	
 func physics_update(delta: float):
@@ -52,6 +52,12 @@ func physics_update(delta: float):
 				
 	# Landing transition
 	if character.is_on_floor():
+		
+		if character.buffered_jump:
+			character.buffered_jump = false
+			state_machine.change_state("jumpstate")
+			return
+		
 		if character.moving_direction != 0:
 			character.can_dash_in_air = true
 			state_machine.change_state(	"walkstate")

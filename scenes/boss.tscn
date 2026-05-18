@@ -1,10 +1,10 @@
-[gd_scene format=3 uid="uid://d00ua32coljuv"]
+[gd_scene format=3 uid="uid://doe4k4lfpd1lg"]
 
-[ext_resource type="Texture2D" uid="uid://cad7ienj21b1j" path="res://assets/images/player/Bertil.png" id="1_7p1mj"]
-[ext_resource type="Script" uid="uid://mi0qmve3nya0" path="res://scripts/combat/enemy.gd" id="1_md0e3"]
-[ext_resource type="Script" uid="uid://ckfc668g0exx2" path="res://scripts/combat/health.gd" id="4_ipns3"]
-[ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/combat/hurtbox.gd" id="5_8qclf"]
-[ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/combat/health_bar.gd" id="6_w8i8w"]
+[ext_resource type="Script" uid="uid://c2lcxbvuq3opr" path="res://scripts/combat/boss.gd" id="1_o1i15"]
+[ext_resource type="Texture2D" uid="uid://cnp1k3bbdlvx0" path="res://assets/images/ric.png" id="2_r3bxh"]
+[ext_resource type="Script" uid="uid://c3sf6ecif8gmt" path="res://scripts/combat/attacking/boss_health.gd" id="3_kvofc"]
+[ext_resource type="Script" uid="uid://cjtnb7uxllscb" path="res://scripts/combat/hurtbox.gd" id="4_ef0k6"]
+[ext_resource type="Script" uid="uid://1h33nmi68q4j" path="res://scripts/combat/health_bar.gd" id="5_ry61v"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tuyoq"]
 properties/0/path = NodePath(".:sync_position")
@@ -24,10 +24,10 @@ properties/4/spawn = true
 properties/4/replication_mode = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
-size = Vector2(871.4285, 1614.2856)
+size = Vector2(2885.7144, 2900)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
-size = Vector2(842.85706, 1614.2856)
+size = Vector2(2942.857, 2900)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqkch"]
 bg_color = Color(0.19793722, 0.19793725, 0.19793713, 1)
@@ -36,33 +36,33 @@ bg_color = Color(0.19793722, 0.19793725, 0.19793713, 1)
 bg_color = Color(0.6439097, 0.04708454, 0.021919081, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4w8v"]
-size = Vector2(1157.1428, 1728.5713)
+size = Vector2(2942.8572, 2914.2856)
 
-[node name="Enemy" type="CharacterBody2D" unique_id=438100406]
+[node name="Boss" type="CharacterBody2D" unique_id=438100406]
 scale = Vector2(0.07, 0.07)
-script = ExtResource("1_md0e3")
+script = ExtResource("1_o1i15")
 
 [node name="EnemySynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1100668368]
 replication_config = SubResource("SceneReplicationConfig_tuyoq")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545070164]
-modulate = Color(1, 0.1973423, 0.112079225, 1)
-texture = ExtResource("1_7p1mj")
+scale = Vector2(2, 2)
+texture = ExtResource("2_r3bxh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1171786639]
-position = Vector2(-7.142863, 35.714314)
+visible = false
+position = Vector2(-3.32083e-05, 7.142856)
 shape = SubResource("RectangleShape2D_g2els")
 
 [node name="HealthComponent" type="Node2D" parent="." unique_id=1504426426]
-script = ExtResource("4_ipns3")
-max_health = 50
+script = ExtResource("3_kvofc")
 
 [node name="Hurtbox" type="Area2D" parent="HealthComponent" unique_id=1690071242]
-visible = false
-script = ExtResource("5_8qclf")
+script = ExtResource("4_ef0k6")
 
 [node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="HealthComponent/Hurtbox" unique_id=1133688344]
-position = Vector2(7.1428432, 35.71429)
+visible = false
+position = Vector2(0, 7.1428027)
 shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1718776609 node_paths=PackedStringArray("health")]
@@ -73,23 +73,22 @@ offset_bottom = -1214.2858
 theme_override_styles/background = SubResource("StyleBoxFlat_dqkch")
 theme_override_styles/fill = SubResource("StyleBoxFlat_qlg0r")
 show_percentage = false
-script = ExtResource("6_w8i8w")
+script = ExtResource("5_ry61v")
 health = NodePath("../HealthComponent")
 
 [node name="DamageArea" type="Area2D" parent="." unique_id=180178718]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=1392092458]
-visible = false
-position = Vector2(-7.14283, -21.428568)
+position = Vector2(0, -5.4495675e-05)
 shape = SubResource("RectangleShape2D_c4w8v")
 
 [node name="DamageTimer" type="Timer" parent="." unique_id=1605518414]
 wait_time = 0.5
 
 [node name="EdgeCheckLeft" type="RayCast2D" parent="." unique_id=1089003188]
-position = Vector2(-450, 700)
+position = Vector2(-1500, 1428.5714)
 target_position = Vector2(0, 200)
 
 [node name="EdgeCheckRight" type="RayCast2D" parent="." unique_id=1810134075]
-position = Vector2(450, 700)
+position = Vector2(1500, 1414.2858)
 target_position = Vector2(0, 200)

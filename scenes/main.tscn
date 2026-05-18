@@ -65,6 +65,10 @@ spawn_path = NodePath("../../SpawningContainers/Hitboxes")
 _spawnable_scenes = PackedStringArray("uid://df0mg3qgt5xtb")
 spawn_path = NodePath("../../SpawningContainers/Hitboxes")
 
+[node name="BossSpawner" type="MultiplayerSpawner" parent="MultiplayerSpawners" unique_id=235775348]
+_spawnable_scenes = PackedStringArray("uid://doe4k4lfpd1lg")
+spawn_path = NodePath("../../SpawningContainers/Bosses")
+
 [node name="SpawningContainers" type="Node" parent="." unique_id=1850739128]
 
 [node name="Enemies" type="Node2D" parent="SpawningContainers" unique_id=1551223450]
@@ -72,6 +76,8 @@ spawn_path = NodePath("../../SpawningContainers/Hitboxes")
 [node name="Players" type="Node2D" parent="SpawningContainers" unique_id=1034175516]
 
 [node name="Hitboxes" type="Node2D" parent="SpawningContainers" unique_id=778308688]
+
+[node name="Bosses" type="Node2D" parent="SpawningContainers" unique_id=1313168768]
 
 [connection signal="pressed" from="ConnectionUI/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="ConnectionUI/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]

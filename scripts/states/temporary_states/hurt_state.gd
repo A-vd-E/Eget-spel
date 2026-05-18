@@ -15,7 +15,7 @@ func  _ready():
 
 
 func enter():
-	print("enter hurt")
+
 	$stun_duration_timer.start()
 	# Stop conflicting movement states
 	character.dashing = false

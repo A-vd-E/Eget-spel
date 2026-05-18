@@ -3,6 +3,7 @@ extends Node
 const PORT: int = 42069
 var player_scene = preload("res://scenes/player.tscn")
 var enemy_scene = preload("res://scenes/enemy.tscn")
+var boss_scene = preload("res://scenes/boss.tscn")
 
 # Changed name to describe its function, and moved to _on_host_button_pressed()
 # so that only the host's/server's sceneTree is the spawnpoint. 
@@ -13,6 +14,9 @@ var enemy_scene = preload("res://scenes/enemy.tscn")
 var _player_spawn_node #Replacement
 var _enemy_spawn_node
 var _enemy_id_counter := -1
+var _boss_spawn_node
+var _boss_id_counter := -10001
+
 
 # Moved logic to "Main" node instead of in networking
 
@@ -42,7 +46,7 @@ func _become_host(dedicated: bool = false) -> void:
 	
 	_player_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Players")
 	_enemy_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Enemies")
-	
+	_boss_spawn_node = get_tree().current_scene.get_node("SpawningContainers").get_node("Bosses")
 	# Only create server boundaries if it's not currently running (important for the scene reload trick)
 	if not is_server_running():
 		var peer = ENetMultiplayerPeer.new()
@@ -64,6 +68,7 @@ func _spawn_initial_state() -> void:
 	_enemy_id_counter = -1
 	
 	var spawn_positions = get_tree().current_scene.get_node_or_null("World/World2/EnemySpawnPositions")
+	var boss_spawn_positions = get_tree().current_scene.get_node_or_null("World/World2/BossSpawnPositions")
 	
 	if spawn_positions:
 		# Iterate over all position markers and spawn an enemy at their global_position
@@ -75,6 +80,17 @@ func _spawn_initial_state() -> void:
 		# Fallback just in case the node is missing
 		_spawn_enemy(Vector2(-400, 300))
 		_spawn_enemy(Vector2(500, 100))
+		
+	if boss_spawn_positions:
+		# Iterate over all position markers and spawn an enemy at their global_position
+		for pos_node in boss_spawn_positions.get_children():
+			_spawn_boss(pos_node.global_position)
+	else:
+		for i in range(10):
+			print("Warning: Could not find 'World/World2/BossSpawnPositions'. Using fallback positions.")
+		# Fallback just in case the node is missing
+		_spawn_boss(Vector2(-400, 300))
+		_spawn_boss(Vector2(500, 100))
 	
 func _join_as_non_host_client(ip_input) -> void:
 	print("Joining as client")
@@ -115,6 +131,18 @@ func _spawn_enemy(spawn_position: Vector2) -> void:
 	_enemy_spawn_node.add_child(enemy)
 	
 	_enemy_id_counter -= 1 # Decrement so next enemy is -2, then -3, etc.
+	
+func _spawn_boss(spawn_position: Vector2) -> void:
+	var boss = boss_scene.instantiate()
+	boss.enemy_id = _boss_id_counter
+	# Name the node predictably for the MultiplayerSpawner
+	boss.name = "Boss_" + str(abs(_boss_id_counter)) 
+	
+	boss.global_position = spawn_position
+	
+	_boss_spawn_node.add_child(boss)
+	
+	_boss_id_counter -= 1 # Decrement so next enemy is -2, then -3, etc.
 	
 func _add_player(id):
 	print("Player %s joined the game" % id)
