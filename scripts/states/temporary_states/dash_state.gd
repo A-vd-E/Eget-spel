@@ -22,7 +22,7 @@ func _ready():
 
 
 func enter():
-	print("enter dash")
+
 	
 	if not character.is_on_floor():
 		character.can_dash_in_air = false
@@ -69,7 +69,7 @@ func end_dash():
 	character.velocity.x = 0
 
 	character.remove_turn_lock("dash")
-	print("coll test")
+	
 	if not character.is_on_floor():
 		state_machine.change_state("fallstate")
 		return

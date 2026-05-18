@@ -16,7 +16,7 @@ func  _ready():
 
 func enter():
 	
-	print("enter wall jump")
+	
 	character.can_dash_in_air = true
 	wall_jump_locked = true
 				
@@ -28,6 +28,9 @@ func enter():
 	wants_wall_jump = false
 	$wall_jump_timer.start()
 	
+	
+func exit():
+	character.buffered_jump = false
 func physics_update(delta: float):
 	
 	

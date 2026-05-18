@@ -18,7 +18,7 @@ func  _ready():
 func enter():
 
 	
-	print("enter jump")
+
 	wants_wall_jump = false
 	# Jump
 	if character.is_on_floor():

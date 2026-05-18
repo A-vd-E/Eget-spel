@@ -12,8 +12,7 @@ func  _ready():
 		Actions.PlayerAction.RANGED: true
 	}
 
-func enter():
-	print("Entering idle state")
+
 
 	
 

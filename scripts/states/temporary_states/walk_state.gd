@@ -10,9 +10,7 @@ func  _ready():
 		Actions.PlayerAction.RANGED: true
 	}
 
-func enter():
-	print("Entering walk state")
-	
+
 # For movement
 func physics_update(delta: float):
 	
