@@ -9,7 +9,7 @@ The player can move around, jump, dash and attack both with melee and ranged att
 The player can therefore choose which key combination they wish to use. Key binds are as follows:
 
 * Movement - 'A' & 'D' / 'Right arrow' & 'Left arrow'
-* Jump - 'Space bar' / 'W' and 'Up arrow' 
+* Jump - 'Space bar' / 'W' / 'Up arrow' 
 * Dash - 'Shift' / 'C'
 * Melee atttack - 'J' / 'X'
 * Ranged attack -' K' / 'F'
