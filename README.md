@@ -8,11 +8,11 @@ The project has evolved from a basic single-player prototype into a client-serve
 The player can move around, jump, dash and attack both with melee and ranged attacks. This is done via keyboard input, and most commands are bound to two keys.
 The player can therefore choose which key combination they wish to use. Key binds are as follows:
 
-* Movement - 'A' & 'D' and 'Right arrow' & 'Left arrow'
-* Jump - 'Space bar' and 'W' and 'Up arrow' 
-* Dash - 'Shift' or 'C'
-* Melee atttack - J and X
-* Ranged attack - K and F
+* Movement - 'A' & 'D' / 'Right arrow' & 'Left arrow'
+* Jump - 'Space bar' / 'W' and 'Up arrow' 
+* Dash - 'Shift' / 'C'
+* Melee atttack - 'J' / 'X'
+* Ranged attack -' K' / 'F'
 
 
 ## 🎮 How to Play & Test
