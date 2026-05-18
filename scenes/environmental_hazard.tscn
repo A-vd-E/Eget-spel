@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dk4rrhsmmcx60"]
 
 [ext_resource type="Script" uid="uid://3mbs7f5e3ofj" path="res://scripts/combat/attacking/environmental_hazard_hitbox.gd" id="1_dtevo"]
-[ext_resource type="Texture2D" uid="uid://bp2sjhgnpix2x" path="res://icon.svg" id="2_8ifdx"]
+[ext_resource type="Texture2D" uid="uid://bp2sjhgnpix2x" path="res://assets/images/icon.svg" id="2_8ifdx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tf4of"]
 size = Vector2(97, 96)
