@@ -12,7 +12,7 @@ The player can therefore choose which key combination they wish to use. Key bind
 * Jump - 'Space bar' / 'W' / 'Up arrow' 
 * Dash - 'Shift' / 'C'
 * Melee atttack - 'J' / 'X'
-* Ranged attack -' K' / 'F'
+* Ranged attack - 'K' / 'F'
 
 
 ## 🎮 How to Play & Test
@@ -27,7 +27,7 @@ The player can therefore choose which key combination they wish to use. Key bind
 **Play Online:**
 The **Host** needs to allow incoming connections via one of these methods:
 * **Port Forwarding (Traditional):** Forward UDP port `42069` in your router. Give your Public IP to the client so they can connect (`[Your_IP]:42069`).
-* **Tunneling (Easier):** Run a tool like [playit.gg](https://playit.gg/) or[ngrok](https://ngrok.com/) to route traffic to `localhost:42069`. Share the generated custom address with the client.
+* **Tunneling (Easier):** Run a tool like [playit.gg](https://playit.gg/) or [ngrok](https://ngrok.com/) to route traffic to `localhost:42069`. Share the generated custom address with the client.
 
 ## 🖥️ Exporting a Dedicated Server Build
 To host a standalone, headless server (no player client attached):
